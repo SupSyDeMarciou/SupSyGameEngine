@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <SupSy/SL.h>
+#include <SL.h>
 
 #ifndef SGE_BASE_WIDTH
     #define SGE_BASE_WIDTH 1920
