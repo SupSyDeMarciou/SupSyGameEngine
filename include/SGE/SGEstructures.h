@@ -1,11 +1,12 @@
 #ifndef __SGE_STRUCTURES
 #define __SGE_STRUCTURES
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <SL.h>
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
+
+#include "../SL.h" // Change to the path to the SL on your machine
 
 #ifndef SGE_BASE_WIDTH
     #define SGE_BASE_WIDTH 1920

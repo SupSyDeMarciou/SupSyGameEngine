@@ -1,7 +1,7 @@
 #ifndef __SGE_DEBUG_DEBUG
 #define __SGE_DEBUG_DEBUG
 
-#include "../SGEstructures.h"
+#include "../../SGE.h"
 #include "../rendering/textures/frameBuffer.h"
 
 /// @brief Initialize debugging tools

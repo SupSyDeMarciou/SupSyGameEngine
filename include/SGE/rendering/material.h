@@ -2,6 +2,7 @@
 #define __SGE_RENDERING_MATERIAL
 
 #include "../SGEstructures.h"
+
 #include "shaders/shaders.h"
 #include "textures/texture.h"
 

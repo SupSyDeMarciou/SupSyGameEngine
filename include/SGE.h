@@ -1,8 +1,6 @@
 #ifndef __SUPSY_SGE
 #define __SUPSY_SGE
 
-#include <SL.h> // SupSyLibrairies at https://github.com/SupSyDeMarciou/SupSyLibrairies
-
 #include "SGE/SGEstructures.h"
 
 #include "SGE/application/application.h"

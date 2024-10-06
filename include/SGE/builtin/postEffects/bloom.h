@@ -1,7 +1,7 @@
 #ifndef __SGE_BUILTIN_BLOOM
 #define __SGE_BUILTIN_BLOOM
 
-#include <SupSy/SGE.h>
+#include "../../../SGE.h"
 
 /// @brief Initialize the necessary shaders for bloom
 /// @return If the logic has been initialized

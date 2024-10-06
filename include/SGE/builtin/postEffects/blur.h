@@ -1,7 +1,7 @@
 #ifndef __SGE_BUILTIN_BLUR
 #define __SGE_BUILTIN_BLUR
 
-#include <SupSy/SGE.h>
+#include "../../../SGE.h"
 
 #define SGE_BUILTIN_BLUR_MAX_ITER 8 // Maximum number of bluring steps that can be taken
 

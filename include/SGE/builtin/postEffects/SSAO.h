@@ -1,7 +1,7 @@
 #ifndef __SGE_BUILTIN_SSAO
 #define __SGE_BUILTIN_SSAO
 
-#include <SupSy/SGE.h>
+#include "../../../SGE.h"
 
 /// @brief Initialize the necessary shaders for SSAO
 /// @return If the logic has been initialized

@@ -2,6 +2,7 @@
 #define __SGE_RENDERING_RENDER
 
 #include "../SGEstructures.h"
+
 #include "../scene/scene.h"
 #include "light.h"
 

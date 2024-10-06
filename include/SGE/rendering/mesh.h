@@ -2,6 +2,7 @@
 #define __SGE_RENDERING_MESH
 
 #include "../SGEstructures.h"
+
 #include "shaders/shaders.h"
 
 
@@ -109,10 +110,10 @@ void meshReplaceVertices(mesh* m, vertex* newVertices, uint newVertexCount);
 /// @param newVertexCount The new number of triangles
 void meshReplaceTriangles(mesh* m, triangle* newTriangles, uint newTriangleCount);
 
-/// @brief 
-/// @param path 
-/// @return 
-mesh* meshImport (const char* path);
+/// @brief Import a mesh
+/// @param path The path to the mesh
+/// @return The imported mesh
+mesh* meshImport(const char* path);
 
 
 ///////////////////////////////////////////////////////////////////////////////////

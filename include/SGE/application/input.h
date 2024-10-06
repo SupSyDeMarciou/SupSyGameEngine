@@ -108,6 +108,10 @@ bool inputIsKeyReleased(enum SGE_Key key);
 /// @param key The key to inspect
 /// @return Wether the key is currently held down
 bool inputIsKeyDown(enum SGE_Key key);
+/// @brief Check if a key is currently not held down
+/// @param key The key to inspect
+/// @return Wether the key is currently not held down
+bool inputIsKeyUp(enum SGE_Key key);
 
 /// @brief Get the position of the mouse
 /// @return The position of the mouse in pixel coordinates

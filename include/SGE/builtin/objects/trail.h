@@ -1,7 +1,7 @@
 #ifndef __SGE_BUILTIN_TRAIL
 #define __SGE_BUILTIN_TRAIL
 
-#include <SupSy/SGE.h>
+#include "../../../SGE.h"
 
 /// @brief Trail renderer external data
 typedef struct Trail trail;
