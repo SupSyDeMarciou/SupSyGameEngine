@@ -10,7 +10,7 @@ Furthermore, text rendering is not yet implemented which is very limiting, but I
 The SGE currently depends on three libraries:
 - The [**SupSyLibraries**](https://github.com/SupSyDeMarciou/SupSyLibraries), developped by yours truly.
 - [**GLFW3**](https://www.glfw.org/) for creating the window, OpenGL context and for accessing the mouse and keyboard inputs.
-- [**GLAD**](https://glad.dav1d.de/#language=c&specification=gl&api=gl%3D3.0&api=gles1%3Dnone&api=gles2%3Dnone&api=glsc2%3Dnone&profile=compatibility&loader=on) with at least the specifications baked into this link.
+- [**GLAD**](https://glad.dav1d.de/#language=c&specification=gl&api=gl%3D4.6&api=gles1%3Dnone&api=gles2%3Dnone&api=glsc2%3Dnone&profile=compatibility&loader=on) with at least the specifications baked into this link.
 
 In addition, after downloading the library, make sure to change the macro `__SUPSY_SGE_PATH` line 21 in file `include/SGE/SGEstructures.h` to the path of the `SGE/..` folder on your machine, as the SGE needs to have access to it when loading built-in shaders (and other built-in files I might want to add later on). Also, if the **SL** is not in the same folder as the **SGE**, make sure to modify the `#include` in line 9 of `include/SGE/SGEstructures.h`. Those, saddly, are some of the quirks mentionned above.
 
