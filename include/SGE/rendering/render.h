@@ -6,12 +6,6 @@
 #include "../scene/scene.h"
 #include "light.h"
 
-#define REND_ENV_MAX_OBJECTS_TO_RENDER 8192
-
-#define REND_ENV_UNIFORM_BUFFER_BINDING_IDX 0
-#define REND_ENV_UNIFORM_BUFFER_BINDING_NAME "Environment"
-#define REND_ENV_MAX_NB_LIGHTS 128
-
 
 typedef struct SkyVariables sky_vars;
 void REbackground_skySetColors(vec3 sunColorDay, vec3 sunColorNoon, vec3 skyColorDay, vec3 skyColorNoon, vec3 skyColorNight);
@@ -85,15 +79,15 @@ frame_buffer* REGetOutputFB(render_env* re);
 
 /// @brief Set the ambiant color of this environment
 /// @param newColor The new color to use
-void REsetAmbiantColor(vec4 newColor);
+void RESetAmbiantColor(vec4 newColor);
 /// @brief Set the background for the renders
 /// @param func_renderBackground The function which sends all the necessary data before rendering
 /// @param backgroundData Additionnal data
 /// @return The last background data which was stored
-void* REsetBackground(shader (*func_renderBackground)(void), void* backgroundData);
+void* RESetBackground(shader (*func_renderBackground)(void), void* backgroundData);
 /// @brief Get the current background data
 /// @return The current background data
-void* REgetBackgroundData();
+void* REGetBackgroundData();
 
 void REupdateGPUEnvironmentData();
 void REupdateGPUCameraData(cam* camera);

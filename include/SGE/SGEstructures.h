@@ -3,9 +3,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
-
 #include "../SL.h" // Change to the path to the SL on your machine
 
 #ifndef SGE_BASE_WIDTH
@@ -19,6 +19,9 @@ typedef struct Application application;
 typedef struct Scene scene;
 typedef struct RenderEnvironment render_env;
 
-#define __SUPSY_SGE_PATH "C:/msys64/mingw64/include/SupSy/SGE"
+#define SGE_REND_ENV_MAX_OBJECTS_TO_RENDER 8192
+#define SGE_REND_ENV_MAX_LIGHTS_TO_RENDER 128
+
+#define __SUPSY_SGE_PATH "C:/msys64/mingw64/include/SupSy/SGE" // Change to path to the SGE on your machine
 
 #endif

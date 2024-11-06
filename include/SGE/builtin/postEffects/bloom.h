@@ -6,6 +6,8 @@
 /// @brief Initialize the necessary shaders for bloom
 /// @return If the logic has been initialized
 bool initializeBloomLogic();
+/// @brief Cleanly destroy all off the Bloom related memory
+void terminateBloomLogic();
 
 /// @brief Apply bloom to the input texture2D
 /// @param source The input texture

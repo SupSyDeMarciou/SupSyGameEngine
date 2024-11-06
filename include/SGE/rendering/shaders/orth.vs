@@ -1,5 +1,6 @@
 #version 330 core
 
+#include "!rendering/shaders/camera"
 // Camera
 layout (std140) uniform Camera {
     vec4 u_CamData; // NP, FP, W, H

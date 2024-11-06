@@ -2,6 +2,7 @@
 #define __SGE_RENDERING_SHADERS_SHADER
 
 #include "../../SGEstructures.h"
+#include "buffers.h"
 
 /// @brief Set the default path from which to look for shaders when only giving their file names
 /// @param folder The path to the shader folder
@@ -32,14 +33,17 @@ void shaderUse(shader s);
 
 /// @brief Attach a uniform buffer block to a shader
 /// @param s The shader
-/// @param bufferName The name of the uniform buffer
 /// @param bindingPoint The binding point to the uniform buffer
-void shaderAttachUniformBuffer(shader s, const char* bufferName, uint bindingPoint);
-/// @brief Attach a shader storage block to a shader
+void shaderAttachUniformBufferBP(shader s, const sbu_bp* bindingPoint);
+/// @brief Attach a storage buffer block to a shader
 /// @param s The shader
-/// @param bufferName The name of the shader storage
-/// @param bindingPoint The binding point to the shader storage
-void shaderAttachShaderStorage(shader s, const char* storageName, uint bindingPoint);
+/// @param bindingPoint The binding point to the storage buffer
+void shaderAttachShaderStorageBP(shader s, const sbs_bp* bindingPoint);
+/// @brief Attach a storage buffer block to a shader
+/// @param s The shader
+/// @param name The name of the buffer binding point
+/// @param bindingIDX The index of the buffer binding point
+void shaderAttachShaderStorage_noBP(shader s, const char* name, uint bindingIDX);
 
 /// @brief Set a shader boolean
 /// @param s Shader ID

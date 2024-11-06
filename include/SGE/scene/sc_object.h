@@ -65,7 +65,7 @@ struct SceneObject {
     bool isStatic; // If this object never updates
     bool isActive; // if the object is currently active
     
-    list_t externalData;
+    list externalData;
 };
 
 /// @brief Create new scene object
@@ -149,8 +149,6 @@ quat scobjWorldRot(sc_obj* obj);
 
 // Unique identifier for Camera
 #define EXT_ID_CAMERA 1
-#define CAMERA_UNIFORM_BUFFER_BINDING_IDX 1
-#define CAMERA_UNIFORM_BUFFER_BINDING_NAME "Camera"
 
 /// @brief Camera external data structure
 /// @warning Use the predefined functions to modify this object's parameters
@@ -214,8 +212,6 @@ void camPrepareForRender(cam* c);
 
 
 #define EXT_ID_RENDER_OBJ 2
-#define RENDER_OBJ_UNIFORM_BUFFER_BINDING_IDX 2
-#define RENDER_OBJ_UNIFORM_BUFFER_BINDING_NAME "Object"
 /// @brief The different culling modes
 typedef enum RenderObjectCulling {
     RENDER_CULL_NONE = 0b00000000,

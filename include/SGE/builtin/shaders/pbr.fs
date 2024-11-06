@@ -1,39 +1,8 @@
 #version 330 core
 
-// Environment
-#define MAX_NB_LIGHTS 128u
-#define LIGHT_NONE 0u
-#define LIGHT_DIR 1u
-#define LIGHT_POINT 2u
-#define LIGHT_SPOT 3u
-#define LIGHT_AREA 4u
-layout (std140) uniform Environment {
-    vec3 u_EnvAmbiant;
-    vec3 u_EnvLightDir[MAX_NB_LIGHTS];
-    vec3 u_EnvLightCol[MAX_NB_LIGHTS];
-    vec3 u_EnvLightPos[MAX_NB_LIGHTS];
-    uint u_EnvLightType[MAX_NB_LIGHTS];
-    uint u_EnvNbLights;
-    vec2 pad;
-};
-
-// Camera
-layout (std140) uniform Camera {
-    vec4 u_CamData; // NP, FP, W, H
-    vec3 u_CamPosition;
-    mat3 u_CamInvRotMat;
-    mat4 u_CamProjMat;
-    mat4 u_CamRenderMat;
-};
-
-// Object
-layout (std140) uniform Object {
-    vec3 u_ObjPosition;
-    mat3 u_ObjRotMat;
-    vec3 u_ObjScale;
-    mat3 u_ObjTransformNormalMat;
-    mat4 u_ObjTransformMat;
-};
+#include "!rendering/shaders/environment.glsl"
+#include "!rendering/shaders/camera.glsl"
+#include "!rendering/shaders/object.glsl"
 
 uniform vec4 mColor = vec4(1);
 uniform float mRoughness = 1.0;
