@@ -22,6 +22,6 @@ typedef struct RenderEnvironment render_env;
 #define SGE_REND_ENV_MAX_OBJECTS_TO_RENDER 8192
 #define SGE_REND_ENV_MAX_LIGHTS_TO_RENDER 128
 
-static const char* __SUPSY_SGE_PATH = "C:/msys64/mingw64/include/SupSy/SGE"; // Change to path to the SGE on your machine
+extern char* __SUPSY_SGE_PATH;
 
 #endif
