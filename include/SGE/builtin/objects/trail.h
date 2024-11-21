@@ -5,8 +5,7 @@
 
 /// @brief Trail renderer external data
 typedef struct Trail trail;
-
-#define EXT_ID_TRAIL 103
+DEF_EXT_ID(trail)
 
 /// @brief Create a trail renderer
 /// @param focusObject The object from which the trail is emitted
@@ -19,5 +18,8 @@ sc_obj* newTrail(sc_obj* focusObject, float thickness, float lifetime, vec3 star
 /// @brief The the state of the simulation of the trail
 /// @param b Wether to simulate the trail
 void trailSimulate(bool b);
+
+/// @brief Register the trail external data block
+void registerTrail();
 
 #endif

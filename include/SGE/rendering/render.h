@@ -1,10 +1,11 @@
-#ifndef __SGE_RENDERING_RENDER
-#define __SGE_RENDERING_RENDER
+#ifndef __SGE_RENDER_RENDER_H__
+#define __SGE_RENDER_RENDER_H__
 
 #include "../SGEstructures.h"
 
 #include "../scene/scene.h"
 #include "light.h"
+#include "renderObject.h"
 
 
 typedef struct SkyVariables sky_vars;
@@ -17,21 +18,19 @@ typedef struct RenderEnvironment render_env;
 
 /// @brief Create a render environment
 /// @return The newly created render environment
-render_env* createRenderEnvironnment();
+render_env* newRenderEnvironnment();
 
 /// @brief Destroy a render environment
 /// @param toDestroy The render environment to destroy
-void destroyRenderEnvironment(render_env* toDestroy);
+void freeRenderEnvironment(render_env* toDestroy);
 
 /// @brief Set rendering camera for the render environment
-/// @param re The render environment
 /// @param camera The new rendering camera
-void RESetRenderCamera(render_env* re, cam* camera);
+void RESetRenderCamera(cam* camera);
 
 /// @brief Get rendering camera for the render environment 
-/// @param re The render environment
 /// @return The current rendering camera
-cam* REGetRenderCamera(render_env* re);
+cam* REGetRenderCamera();
 
 /// @brief Add a render object to a render environment
 /// @param re The render environment
@@ -60,12 +59,15 @@ bool RERemoveLight(render_env* re, light* toRemove);
 /// @param re The render environment from which to extract the data
 void shaderSendEnvironmentData(shader s);
 
-/// @brief Set the current display size
-/// @param size Current size
+/// @brief Set the current screen size
+/// @param size New size
 void RESetCurrentSize(uvec2 size);
-/// @brief Get the current display size
-/// @return The current size
+/// @brief Get the current screen size
+/// @return The current screen size
 uvec2 REGetCurrentSize();
+/// @brief Get the current screen HEIGHT to WIDTH ratio
+/// @return The current screen ratio
+float REGetScreenRatio();
 
 /// @brief Render the screen quad
 /// @param re The render environment
@@ -81,22 +83,23 @@ frame_buffer* REGetOutputFB(render_env* re);
 /// @param newColor The new color to use
 void RESetAmbiantColor(vec4 newColor);
 /// @brief Set the background for the renders
-/// @param func_renderBackground The function which sends all the necessary data before rendering
+/// @param backgroundRenderFunc The function which sends all the necessary data before rendering
 /// @param backgroundData Additionnal data
 /// @return The last background data which was stored
-void* RESetBackground(shader (*func_renderBackground)(void), void* backgroundData);
+void* RESetBackground(shader (*backgroundRenderFunc)(void*), void* backgroundData);
 /// @brief Get the current background data
 /// @return The current background data
 void* REGetBackgroundData();
 
-void REupdateGPUEnvironmentData();
-void REupdateGPUCameraData(cam* camera);
-void REupdateGPURenderObjectData(render_obj* ro);
+void REUpdateGPUEnvironmentData();
+void REUpdateGPUCameraData(cam* camera);
+void REUpdateGPURenderObjectData(render_obj* ro);
+void REUpdateGPURenderObjectData_Calculate(sc_obj* obj);
 /// @brief Render every object in the scene
-void RErenderScene();
+void RERenderScene();
 /// @brief Render every object in the scene to the specified frame buffer
 /// @param buffer Frame buffer on which to render
-void RErenderSceneFB(frame_buffer* buffer);
+void RERenderSceneFB(frame_buffer* buffer);
 
 /// @brief Apply Hight Dynamic Range to Low Dynamic Range conversion
 /// @param source The HDR texture

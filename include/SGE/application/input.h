@@ -5,10 +5,11 @@
 
 /// @brief The possible states for a key
 enum SGE_Key_State {
-    SGE_KEY_STATE_UP = 1, // The key is not pressed
-    SGE_KEY_STATE_PRESSED = 2, // The key has been pressed at the start of the current frame
-    SGE_KEY_STATE_DOWN = 4, // The key has been down for at least one frame
-    SGE_KEY_STATE_RELEASED = 8// The key has been released on the current frame
+    SGE_KEY_STATE_UP = 1,       // The key is not pressed
+    SGE_KEY_STATE_PRESSED = 2,  // The key has been pressed at the start of the current frame
+    SGE_KEY_STATE_DOWN = 4,     // The key has been down for at least one frame
+    SGE_KEY_STATE_RELEASED = 8, // The key has been released on the current frame
+    SGE_KEY_STATE_REPEAT = 16   // The key has been pressed long enough for the OS to consider it repeating (useful for text input)
 };
 
 /// @brief The recognized inputs
@@ -84,9 +85,6 @@ enum SGE_Key {
     SGE_MOUSE_ANY = 3,
 };
 
-/// @brief Updates the state of each key
-void inputUpdateStates();
-
 /// @brief Returns the current state of the key
 /// @param key The key to inspect
 enum SGE_Key_State inputGetKeyState(enum SGE_Key key);
@@ -112,6 +110,10 @@ bool inputIsKeyDown(enum SGE_Key key);
 /// @param key The key to inspect
 /// @return Wether the key is currently not held down
 bool inputIsKeyUp(enum SGE_Key key);
+/// @brief Check if a key is currently considered "repeating"
+/// @param key The key to inspect
+/// @return Wether the key is currently considered "repeating"
+bool inputIsKeyRepeat(enum SGE_Key key);
 
 /// @brief Get the position of the mouse
 /// @return The position of the mouse in pixel coordinates
@@ -119,6 +121,11 @@ vec2 inputGetMousePos();
 /// @brief Get the position of the mouse
 /// @return The position of the mouse in screen coordinates
 vec2 inputGetMousePos_Screen();
+
+/// @brief Get the text inputed during this frame
+/// @return The array containing the inputed text
+/// @note This array is part of the input system, it should only be used as read-only
+array(uint32)* inputGetTextInput();
 
 /// @brief Convert position in screen-space coordinates into world-space coordinates
 /// @param screenPos The position in screen-space

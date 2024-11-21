@@ -1,5 +1,5 @@
-#ifndef __SGE_RENDERING_SHADERS_BUFFERS
-#define __SGE_RENDERING_SHADERS_BUFFERS
+#ifndef __SGE_RENDER_SHADERS_BUFFERS_H__
+#define __SGE_RENDER_SHADERS_BUFFERS_H__
 
 #include "../../SGEstructures.h"
 

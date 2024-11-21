@@ -1,5 +1,5 @@
-#ifndef __SGE_RENDERING_MESH
-#define __SGE_RENDERING_MESH
+#ifndef __SGE_RENDER_MESH_H__
+#define __SGE_RENDER_MESH_H__
 
 #include "../SGEstructures.h"
 

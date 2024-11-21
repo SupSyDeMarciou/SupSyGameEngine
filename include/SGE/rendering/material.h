@@ -1,5 +1,5 @@
-#ifndef __SGE_RENDERING_MATERIAL
-#define __SGE_RENDERING_MATERIAL
+#ifndef __SGE_RENDER_MATERIAL_H__
+#define __SGE_RENDER_MATERIAL_H__
 
 #include "../SGEstructures.h"
 
@@ -42,7 +42,7 @@ typedef struct StandardMaterialData {
     vec3 emission;
 } std_mat_data;
 
-material* newStandardMaterial(shader s, vec4 color, float roughness, float metalic, float specular, vec3 emission);
+material* newMaterial_PBR(shader s, vec4 color, float roughness, float metalic, float specular, vec3 emission);
 
 
 typedef struct StandardTexturedMaterialData {
@@ -58,7 +58,7 @@ typedef struct StandardTexturedMaterialData {
     texture2D* emissionMap;
 } std_tex_mat_data;
 
-material* newStandardTexturedMaterial(shader s, 
+material* newMaterial_PBRTextured(shader s, 
     vec4 color, float roughness, float metalic, float specular, vec3 emission,
     texture2D* albedoMap, texture2D* normalMap, texture2D* roughnessMetalicSpecularMap,
     texture2D* emissionMap

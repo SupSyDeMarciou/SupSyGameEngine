@@ -1,5 +1,5 @@
-#ifndef __SUPSY_SGE
-#define __SUPSY_SGE
+#ifndef __SGE_H__
+#define __SGE_H__
 
 #include "SGE/SGEstructures.h"
 
@@ -8,14 +8,15 @@
 
 #include "SGE/debug/debug.h"
 
-#include "SGE/rendering/material.h"
-#include "SGE/rendering/mesh.h"
-#include "SGE/rendering/render.h"
-#include "SGE/rendering/light.h"
-#include "SGE/rendering/shaders/postProcessShader.h"
-#include "SGE/rendering/shaders/shader.h"
-#include "SGE/rendering/textures/frameBuffer.h"
-#include "SGE/rendering/textures/texture.h"
+#include "SGE/render/material.h"
+#include "SGE/render/mesh.h"
+#include "SGE/render/render.h"
+#include "SGE/render/light.h"
+#include "SGE/render/text.h"
+#include "SGE/render/shaders/postProcessShader.h"
+#include "SGE/render/shaders/shader.h"
+#include "SGE/render/textures/frameBuffer.h"
+#include "SGE/render/textures/texture.h"
 
 #include "SGE/scene/scene.h"
 #include "SGE/scene/sc_object.h"

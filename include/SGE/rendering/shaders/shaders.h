@@ -1,5 +1,5 @@
-#ifndef __SGE_RENDERING_SHADERS
-#define __SGE_RENDERING_SHADERS
+#ifndef __SGE_RENDER_SHADERS_H__
+#define __SGE_RENDER_SHADERS_H__
 
 #include "shader.h"
 #include "postProcessShader.h"

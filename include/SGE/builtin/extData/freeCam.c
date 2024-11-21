@@ -1,39 +1,42 @@
 #include "freeCam.h"
+DEF_EXT_ID_C(free_cam)
 
-typedef struct P_FreeCamExternalData {
-    free_cam_ext_data public;
+typedef struct P_FreeCam {
+    free_cam public;
     vec2 rotPos, rotVel;
     vec3 linVel;
 
     float FOV;
     float zoomLerp;
-} p_free_cam_ext_data;
+} p_free_cam;
 
-void scobjAddFreeCamExtData(sc_obj* object, float linVel, float rotVel, float linAcc, float rotAcc, float linFric, float linFricFast, float rotFric) {
-    p_free_cam_ext_data* new = (p_free_cam_ext_data*)malloc(sizeof(p_free_cam_ext_data));
+void scobjAttachFreeCam(sc_obj* object, float linVel, float rotVel, float linAcc, float rotAcc, float linFric, float linFricFast, float rotFric) {
+    p_free_cam* new = (p_free_cam*)malloc(sizeof(p_free_cam));
     new->public.linFricFast = linFricFast; new->public.linVel = linVel; new->public.rotVel = rotVel;
     new->public.linAcc = linAcc; new->public.rotAcc = rotAcc; new->public.linFric = linFric; new->public.rotFric = rotFric;
     
     new->linVel = vec3_zero; 
     new->rotVel = vec2_zero;
-    new->FOV = camGetFOV((cam*)scobjGetExtData(object, EXT_ID_CAMERA));
+    new->FOV = camGetFOV(scobjGetExtData(object, cam));
     new->zoomLerp = new->FOV;
     
     vec3 temp = vec3_zero; 
-    quatToVec3_Euler_(&object->transform.rotation, &temp);
-    new->rotPos.x = temp.y;
-    new->rotPos.y = temp.x;
+    // quatToVec3_Euler_(&object->transform.rotation, &temp);
+    new->rotPos.x = temp.z;
+    new->rotPos.y = temp.y;
 
-    scobjAddExtDataP(object, EXT_ID_FREE_CAM, new, (func_free*)&free);
+    new->rotPos = vec2_zero;
+
+    scobjAddExtData(object, free_cam, new);
 }
 
 void updateFreeCam(sc_obj* object) {
-    p_free_cam_ext_data* data = scobjGetExtData(object, EXT_ID_FREE_CAM);
+    p_free_cam* data = (p_free_cam*)scobjGetExtData(object, free_cam);
     double dt = SL_min(TIME.dt, 1.0 / 30.0);
 
     vec2 rot = (vec2){
-        inputIsKeyDown(SGE_KEY_M) - inputIsKeyDown(SGE_KEY_K),
-        inputIsKeyDown(SGE_KEY_L) - inputIsKeyDown(SGE_KEY_O),
+        inputIsKeyDown(SGE_KEY_K) - inputIsKeyDown(SGE_KEY_M),
+        inputIsKeyDown(SGE_KEY_O) - inputIsKeyDown(SGE_KEY_L),
     };
 
     if (rot.x == 0) data->rotVel.x *= 1.0 - data->public.rotFric * dt;
@@ -54,14 +57,14 @@ void updateFreeCam(sc_obj* object) {
         data->rotPos.y = -PI * 0.5 + 0.001;
         data->rotVel.y = 0.0;
     }
-    setQ_Euler_(&object->transform.rotation, data->rotPos.y, data->rotPos.x, 0);
+    setQ_Euler_(&object->transform.rotation, data->rotPos.x, data->rotPos.y, 0);
 
     vec3 mouvement = (vec3){
         inputIsKeyDown(SGE_KEY_D) - inputIsKeyDown(SGE_KEY_Q),
         inputIsKeyDown(SGE_KEY_SPACE) - inputIsKeyDown(SGE_KEY_CTRL),
         inputIsKeyDown(SGE_KEY_Z) - inputIsKeyDown(SGE_KEY_S),
     };
-    quat q = Quat_Euler(0, data->rotPos.x, 0);
+    quat q = Quat_Euler(data->rotPos.x, 0, 0);
     rot3Q_s(&mouvement, &q);
     bool speedyBoi = inputIsKeyDown(SGE_KEY_SHIFT) && (mouvement.x || mouvement.y || mouvement.z);
     scale3_s(addS3_s(&data->linVel, &mouvement, dt * data->public.linAcc), 1.0 - (speedyBoi ? data->public.linFricFast : data->public.linFric) * dt);
@@ -71,9 +74,13 @@ void updateFreeCam(sc_obj* object) {
     if (REGetRenderCamera(APP->renderEnvironment)) camSetFOV(REGetRenderCamera(APP->renderEnvironment), data->zoomLerp);
 }
 
-sc_obj* freeCam_addDefault(vec3* pos, quat* rot, float FOV, bool freeTransformData) {
-    sc_obj* camera = newCamera(pos, rot, NULL, freeTransformData, FOV, 0.03, 1000.0, SGE_BASE_WIDTH / (float)SGE_BASE_WIDTH);
-    scobjAddFreeCamExtData(camera, 2.0, 2.5, 100.0, 30.0, 10.0, 5.0, 35.0);
+sc_obj* freeCam_addDefault(vec3 pos, quat rot, float FOV) {
+    sc_obj* camera = newCamera(pos, rot, NULL, FOV, 0.03, 1000.0, SGE_BASE_WIDTH / (float)SGE_BASE_WIDTH);
+    scobjAttachFreeCam(camera, 2.0, 2.5, 100.0, 30.0, 10.0, 5.0, 35.0);
     camera->update = (func_update*)&updateFreeCam;
     return camera;
+}
+
+void registerFreeCam() {
+    extDataRegister(&EXT_ID(free_cam), &free);
 }

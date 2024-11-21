@@ -1,5 +1,5 @@
-#ifndef __SGE_RENDERING_TEXTURES_TEXTURE
-#define __SGE_RENDERING_TEXTURES_TEXTURE
+#ifndef __SGE_RENDER_TEXTURES_TEXTURE_H__
+#define __SGE_RENDER_TEXTURES_TEXTURE_H__
 
 #include "../../SGEstructures.h"
 #include "../shaders/shader.h"

@@ -1,12 +1,16 @@
-#ifndef __SGE_SCENE_SCENE
-#define __SGE_SCENE_SCENE
+#ifndef __SGE_SCENE_SCENE_H__
+#define __SGE_SCENE_SCENE_H__
 
 #include "../SGEstructures.h"
 #include "sc_object.h"
 
+typedef struct Scene {
+    list sceneObjects;
+} scene;
+
 /// @brief Creates a new empty scene
 /// @return The newly created scene
-scene* createScene();
+scene createScene();
 
 /// @brief Destroy an existing scene
 /// @param toDestoy The scene to destroy
@@ -14,11 +18,10 @@ void destroyScene(scene* toDestoy);
 
 /// @brief Add a scene object to the scene
 /// @param sc The scene in which to add the object
-/// @param obj The object to add
-void sceneAddObject(scene* sc, sc_obj* obj);
+/// @return The newly created object (with default parameters)
+sc_obj* sceneAddObject(scene* sc);
 
 /// @brief Update every scene object
-/// @param sc The scene to update
-void sceneUpdate(scene* sc);
+void sceneUpdate();
 
 #endif

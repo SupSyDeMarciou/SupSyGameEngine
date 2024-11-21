@@ -5,7 +5,7 @@
 
 /// @brief Initialize the necessary shaders for SSAO
 /// @return If the logic has been initialized
-bool initializeSSAOLogic();
+bool initializeSSAO();
 /// @brief Cleanly destroy all off the SSAO related memory
 void terminateSSAOLogic();
 

@@ -1,14 +1,14 @@
-#ifndef __SGE_SCENE_SC_OBJECT
-#define __SGE_SCENE_SC_OBJECT
+#ifndef __SGE_SCENE_SC_OBJECT_H__
+#define __SGE_SCENE_SC_OBJECT_H__
 
 #include <stdarg.h>
 #include "../SGEstructures.h"
 
-#include "../rendering/mesh.h"
-#include "../rendering/material.h"
+#include "../render/mesh.h"
+#include "../render/material.h"
 
 
-#define EXT_ID_TRANSFORM 0
+#define EXT_ID_trsfrm 0
 /// @brief Structure representing an object's spacial coordinates
 typedef struct Transform trsfrm;
 struct Transform {
@@ -24,22 +24,13 @@ struct Transform {
 /// @param toFree The object to free
 typedef void func_free(void* toFree);
 
-/// @brief Structure for attaching data to a scene object
-typedef struct ExternalData {
-
-    uint ID;
-    void* data;
-    func_free* freeData;
-
-} ext_data;
-
-/// @brief Create an external data block to use with a scene object
-/// @param ID The unique identifier of this external data block
-/// @param data The data to package
-/// @param freeData The appropriate function to free this data when done 
-/// @return The block of data
-static inline ext_data extDataPackage(uint ID, void* data, func_free* freeData) { return (ext_data){ID, data, freeData}; }
-
+#define EXT_ID(type) EXT_ID_##type
+#define DEF_EXT_ID(type) extern const volatile uint EXT_ID_##type;
+#define DEF_EXT_ID_C(type) const volatile uint EXT_ID_##type = 0;
+/// @brief Register an external data block
+/// @param id "EXT_ID(type)"
+/// @param f The function to free the data stored in this block
+void extDataRegister(const volatile uint* id, func_free* f);
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,14 +64,10 @@ struct SceneObject {
 /// @param rotation The initial rotation of the object in world-space
 /// @param scale The initial scale of the object in world-space
 /// @param parent The parent of the object's transform (May be NULL)
-/// @param freeTransformData Whether to free the values pointed to by "position", "rotation" and "scale"
 /// @param isStatic If the obect is static (Static objects are supposed unmoving and don't update, thus optimizations can be done on them)
 /// @param update The update function of this object. Is called every frame if non-static (May be NULL)
 /// @return The newly created scene object 
-sc_obj* newSceneObject(
-    vec3* position, quat* rotation, vec3* scale, trsfrm* parent, bool freeTransformData,
-    bool isStatic, func_update* update
-);
+sc_obj* newSceneObject(vec3 position, quat rotation, vec3 scale, trsfrm* parent, bool isStatic, func_update* update);
 
 /// @brief Free a scene object
 /// @param obj The object to free
@@ -100,29 +87,38 @@ bool scobjIsActive(sc_obj* obj);
 /// @param active The value to set
 void scobjSetActive(sc_obj* obj, bool active);
 
-/// @brief Remove an external data block from a scene object
+/// @brief Remove an external data block from a scene object by ID
 /// @param obj The object from which to remove the block
-/// @param ID The unique ID of the block to remove
+/// @param ID The ID of the data block
 /// @return Whether an external data with this ID was removed
-bool scobjRemoveExtData(sc_obj* obj, uint ID);
+bool scobjRemoveExtData_ID(sc_obj* obj, uint ID);
+/// @brief Remove an external data block from a scene object by type
+/// @param obj The object from which to remove the block
+/// @param type The type of the data block
+/// @return Whether an external data with this type was removed
+#define scobjRemoveExtData(obj, type) scobjRemoveExtData_ID(obj, EXT_ID(type))
 
-/// @brief Add an external data block to a scene object
+/// @brief Package and add an external data block to a scene object by ID
 /// @param obj The object to which the block is added
-/// @param externalData The external data block to add
-void scobjAddExtData(sc_obj* obj, ext_data externalData);
-
-/// @brief Package and add an external data block to a scene object
-/// @param obj The object to which the block is added
-/// @param ID The unique identifier of this external data block
+/// @param ID The ID of the data block
 /// @param data The data to package
-/// @param freeData The appropriate function to free this data when done 
-void scobjAddExtDataP(sc_obj* obj, uint ID, void* data, func_free* freeData);
+bool scobjAddExtData_ID(sc_obj* obj, uint ID, void* data);
+/// @brief Package and add an external data block to a scene object by type
+/// @param obj The object to which the block is added
+/// @param type The type of the data block
+/// @param data The data to package
+#define scobjAddExtData(obj, type, data) if (!scobjAddExtData_ID(obj, EXT_ID(type), data)) failWithError("Type \""#type"\" was not registered as an external data block");
 
-/// @brief Get an object's external data by ID. If the ID is not unique, it will get the first one.
+/// @brief Get an object's external data by ID.
 /// @param obj The scene object
-/// @param ID The ID of the data to retrieve
-/// @return A pointer to the data
-void* scobjGetExtData(sc_obj* obj, uint ID);
+/// @param ID The ID of the data block
+/// @return A pointer to the first matching data or NULL if none was found
+void* scobjGetExtData_ID(sc_obj* obj, uint ID);
+/// @brief Get an object's external data by type.
+/// @param obj The scene object
+/// @param type The type of the data block
+/// @return A pointer to the first matching data or NULL if none was found
+#define scobjGetExtData(obj, type) ((type*)scobjGetExtData_ID(obj, EXT_ID(type)))
 
 /// @brief Call a scene object's update method
 /// @param obj The object to process
@@ -136,6 +132,10 @@ vec3 scobjWorldPos(sc_obj* obj);
 /// @param obj The scene object
 /// @return The world-space rotation
 quat scobjWorldRot(sc_obj* obj);
+/// @brief Get world-space scale of a scene object
+/// @param obj The scene object
+/// @return The world-space scale
+vec3 scobjWorldScale(sc_obj* obj);
 
 
 
@@ -147,24 +147,21 @@ quat scobjWorldRot(sc_obj* obj);
 
 
 
-// Unique identifier for Camera
-#define EXT_ID_CAMERA 1
-
 /// @brief Camera external data structure
 /// @warning Use the predefined functions to modify this object's parameters
 typedef struct Camera cam;
+DEF_EXT_ID(cam)
 
 /// @brief Create a new camera object
 /// @param position The initial position of the object in world-space
 /// @param rotation The initial rotation of the object in world-space
 /// @param parent The parent of the object's transform (May be NULL)
-/// @param freeTransformData Whether to free the values pointed to by "position" and "rotation"
 /// @param FOV The Field Of View of the camera (In degrees)
 /// @param nearClippingPlane The shortest visible distance
 /// @param farClippingPlane The furthest visible distance
 /// @param screenRatio The width-to-height ratio of the camera
 /// @return The newly created camera
-sc_obj* newCamera(vec3* position, quat* rotation, trsfrm* parent, bool freeTransformData, float FOV, float nearClippingPlane, float farClippingPlane, float screenRatio);
+sc_obj* newCamera(vec3 position, quat rotation, trsfrm* parent, float FOV, float nearClippingPlane, float farClippingPlane, float screenRatio);
 
 /// @brief Change the camera's Field Of View
 /// @param camera The camera to modify
@@ -200,96 +197,5 @@ vec4 camGetNCP_FCP_W_H(cam* camera);
 sc_obj* camGetScObj(cam* c);
 
 void camPrepareForRender(cam* c);
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////// * * *  RENDER OBJECT  * * * /////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-#define EXT_ID_RENDER_OBJ 2
-/// @brief The different culling modes
-typedef enum RenderObjectCulling {
-    RENDER_CULL_NONE = 0b00000000,
-    RENDER_CULL_FRONT = 0b00000001,
-    RENDER_CULL_BACK = 0b00000010,
-    RENDER_CULL_BOTH = 0b00000011
-} render_obj_cull;
-
-/// @brief Function just before an object is rendered
-/// @param obj The object to render
-typedef void func_onBeforeRender(sc_obj* obj);
-/// @brief Function just after an object has been rendered
-/// @param obj The object rendered
-typedef void func_onAfterRender(sc_obj* obj);
-
-/// @brief Render object external data structure
-typedef struct RenderObject {
-    mesh* mesh;
-    array* materials;
-
-    func_onBeforeRender* onBeforeRender;
-    func_onAfterRender* onAfterRender;
-
-    union {
-        struct {
-            bool render : 1;
-            render_obj_cull cull : 2;
-            bool castShadow : 1;
-            bool transparent : 1;
-        };
-        uint8 flags;
-    };
-} render_obj;
-
-/// @brief Add a new render object external data block
-/// @param source The scene object on which this data is to be added
-/// @param mesh The mesh of the object
-/// @param materials The materials with which to render
-/// @param render If the object should render
-/// @param cull How the object should cull
-/// @param castShadow If the object casts shadows
-/// @param onBeforeRender Function called just before a render
-/// @param onAfterRender Function called just after a render
-void scobjAddRenderObjectExtData(
-    sc_obj* source,
-    mesh* mesh, array* materials,
-    bool render, render_obj_cull cull, bool castShadow,
-    func_onBeforeRender* onBeforeRender, func_onAfterRender* onAfterRender
-);
-/// @brief Add a new render object external data block
-/// @param source The scene object on which this data is to be added
-/// @param mesh The mesh of the object
-/// @param material The material with which to render
-/// @param render If the object should render
-/// @param cull How the object should cull
-/// @param castShadow If the object casts shadows
-/// @param onBeforeRender Function called just before a render
-/// @param onAfterRender Function called just after a render
-void scobjAddRenderObjectExtData_SingleMat(
-    sc_obj* source,
-    mesh* mesh, material* material,
-    bool render, render_obj_cull cull, bool castShadow,
-    func_onBeforeRender* onBeforeRender, func_onAfterRender* onAfterRender
-);
-
-/// @brief Calculate necessary data for render
-/// @param ro The object which needs calculating
-void ROPrepareForRender(render_obj* ro);
-
-/// @brief Render an object in current context
-/// @param ro The object to be rendered
-void RORender(render_obj* ro);
-
-/// @brief If an object is visible by the camera
-/// @param ro The object to check
-/// @param camera The camera from which to check
-/// @return If the object is visible by the camera
-bool ROIsInCamFrustum(render_obj* ro, cam* camera);
-
 
 #endif

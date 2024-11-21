@@ -1,5 +1,5 @@
-#ifndef __SGE_RENDERING_TEXTURES_FRAME_BUFFER
-#define __SGE_RENDERING_TEXTURES_FRAME_BUFFER
+#ifndef __SGE_RENDER_TEXTURES_FRAME_BUFFER_H__
+#define __SGE_RENDER_TEXTURES_FRAME_BUFFER_H__
 
 #include "../../SGEstructures.h"
 #include "texture.h"

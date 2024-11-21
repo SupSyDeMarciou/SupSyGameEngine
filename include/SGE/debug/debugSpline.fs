@@ -3,10 +3,11 @@
 uniform bool u_RenderDots;
 
 in VS_OUT {
-    vec3 position;
-    vec3 p0;
-    vec3 p1;
-    vec3 p2;
+    vec2 position;
+    vec2 p0;
+    vec2 p1;
+    vec2 p2;
+
     vec3 color;
     float thickness;
 } fs_in;
@@ -48,13 +49,14 @@ float findTmin(vec2 v, vec2 p0, vec2 p1, vec2 p2) {
 
 void main() {
 
-    vec2 uv = fs_in.position.xy;
-    vec2 p0 = fs_in.p0.xz;
-    vec2 p1 = fs_in.p1.xz;
-    vec2 p2 = fs_in.p2.xz;
-
     float e = fs_in.thickness;
+    if (e <= 0.0) discard;
     vec3 color = fs_in.color;
+    
+    vec2 uv = fs_in.position;
+    vec2 p0 = fs_in.p0;
+    vec2 p1 = fs_in.p1;
+    vec2 p2 = fs_in.p2;
 
     float dist = 1.0e37;
     if (u_RenderDots) dist = min(length(p0 - uv), min(length(p1 - uv), length(p2 - uv)));

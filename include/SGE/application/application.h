@@ -5,16 +5,18 @@
 
 #include "../SGEstructures.h"
 #include "../scene/scene.h"
-#include "../rendering/render.h"
+#include "../render/render.h"
 
 struct Application
 {
-    render_env* renderEnvironment;
-    scene* scene;
     GLFWwindow* window;
+    render_env* renderEnvironment;
+    scene scene;
 
     char title[256];
     char fpsString[512];
+
+    bool shouldClose;
 };
 extern application* APP;
 
@@ -31,6 +33,10 @@ extern struct Time {
 /// @brief Initialize the application
 /// @param title The title of the application
 void initializeApp(const char* title);
+/// @brief Initialize the application
+/// @param title The title of the application
+/// @param createRE Wether or not to create render environment. Frees up some space on CPU and GPU when creating an application which does not use the SupSyGameEngine 3D rendering pipeline 
+void initializeApp_RE(const char* title, bool createRE);
 /// @brief Destroy the application
 void destroyApp();
 

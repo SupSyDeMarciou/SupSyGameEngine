@@ -1,7 +1,7 @@
 #include "blur.h"
 
 static post_shader bloom = 0;
-bool initializeBloomLogic() {
+bool initializeBloom() {
     if (bloom) return false;
     initializeBlurLogic();
     bloom = createPostProcessShader("!builtin/postEffects/bloom.fs");

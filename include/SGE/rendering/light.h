@@ -1,5 +1,5 @@
-#ifndef __SGE_RENDERING_LIGHT
-#define __SGE_RENDERING_LIGHT
+#ifndef __SGE_RENDER_LIGHT_H__
+#define __SGE_RENDER_LIGHT_H__
 
 #include "../SGEstructures.h"
 #include "../scene/sc_object.h"
@@ -20,12 +20,12 @@ enum LightAreaShape {
     LIGHT_SHAPE_DISK,
 };
 
-#define EXT_ID_LIGHT 3 
 typedef struct Light light;
+DEF_EXT_ID(light)
 
-void scobjAddLighExtData_Directional(sc_obj* source, vec3 color);
-void scobjAddLighExtData_Point(sc_obj* source, vec3 color, float fallOff, float radius);
-void scobjAddLighExtData_Spot(sc_obj* source, vec3 color, float fallOff, float radius, float angle);
+light* scobjAttachLight_Directional(sc_obj* source, vec3 color);
+light* scobjAttachLight_Point(sc_obj* source, vec3 color, float fallOff, float radius);
+light* scobjAttachLight_Spot(sc_obj* source, vec3 color, float fallOff, float radius, float angle);
 
 /// @brief Get the scene object owner of this light
 /// @param l The light

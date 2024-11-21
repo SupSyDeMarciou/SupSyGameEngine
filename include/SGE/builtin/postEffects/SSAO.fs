@@ -1,6 +1,6 @@
 #version 330 core
 
-#include "!rendering/shaders/camera.glsl"
+#include "!render/shaders/camera.glsl"
 
 uniform sampler2D Source;
 uniform sampler2D Normal;

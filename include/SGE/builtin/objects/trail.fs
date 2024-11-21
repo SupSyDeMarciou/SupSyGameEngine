@@ -17,7 +17,6 @@ layout (location = 1) out vec4 FragNormal;
 void main()
 {
     vec3 color = mix(u_ColorEnd, u_ColorStart, fs_in.uv.x * fs_in.uv.x);
-    // vec3 color = vec3(fs_in.uv, 0);
     FragColor = vec4(color, 1.0);
     FragNormal = vec4(fs_in.normal * 0.5 + 0.5, 1.0);
 }

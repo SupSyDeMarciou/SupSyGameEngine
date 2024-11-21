@@ -1,17 +1,17 @@
-#ifndef __SGE_BUILTIN_FREE_CAM
-#define __SGE_BUILTIN_FREE_CAM
+#ifndef __SGE_BUILTIN_FREE_CAM_H__
+#define __SGE_BUILTIN_FREE_CAM_H__
 
 #include "../../../SGE.h"
 
 /// @brief Free camera external data structure
-typedef struct FreeCamExternalData {
+typedef struct FreeCam {
     float linVel, rotVel;
 
     float linAcc, rotAcc;
     float linFric, linFricFast, rotFric;
-} free_cam_ext_data;
+} free_cam;
+DEF_EXT_ID(free_cam)
 
-#define EXT_ID_FREE_CAM 101
 /// @brief Add a new free cam external data block
 /// @param source The scene object to which this data is to be added
 /// @param linVel The maximum linear velocity
@@ -21,7 +21,7 @@ typedef struct FreeCamExternalData {
 /// @param rotAcc The rotational acceleration
 /// @param linFric The linear friction
 /// @param rotFric The rotational friction
-void scobjAddFreeCamExtData(sc_obj* object, float linVel, float rotVel, float fastLinVel, float linAcc, float rotAcc, float linFric, float rotFric);
+void scobjAttachFreeCam(sc_obj* object, float linVel, float rotVel, float fastLinVel, float linAcc, float rotAcc, float linFric, float rotFric);
 
 /// @brief The update function associated with 'FreeCamExternalData'
 /// @param object The object on which to call the update function
@@ -31,8 +31,10 @@ void updateFreeCam(sc_obj* object);
 /// @param pos Initial position of the camera
 /// @param rot Initial rotation of the camera
 /// @param FOV FOV in degrees
-/// @param freeTransformData Whether to free the values pointed by "position" and "rotation"
 /// @return The newly created and added camera
-sc_obj* freeCam_addDefault(vec3* pos, quat* rot, float FOV, bool freeTransformData);
+sc_obj* freeCam_addDefault(vec3 pos, quat rot, float FOV);
+
+/// @brief Register the freeCam external data block
+void registerFreeCam();
 
 #endif

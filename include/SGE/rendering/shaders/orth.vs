@@ -1,23 +1,7 @@
 #version 330 core
 
-#include "!rendering/shaders/camera"
-// Camera
-layout (std140) uniform Camera {
-    vec4 u_CamData; // NP, FP, W, H
-    vec3 u_CamPosition;
-    mat3 u_CamInvRotMat;
-    mat4 u_CamProjMat;
-    mat4 u_CamRenderMat;
-};
-
-// Object
-layout (std140) uniform Object {
-    vec3 u_ObjPosition;
-    mat3 u_ObjRotMat;
-    vec3 u_ObjScale;
-    mat3 u_ObjTransformNormalMat;
-    mat4 u_ObjTransformMat;
-};
+#include "!render/shaders/camera.glsl"
+#include "!render/shaders/object.glsl"
 
 // Vertex
 layout (location = 0) in vec3 aPos;

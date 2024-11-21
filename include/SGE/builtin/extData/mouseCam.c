@@ -1,4 +1,5 @@
 #include "mouseCam.h"
+DEF_EXT_ID_C(mouse_cam)
 
 typedef struct MouseCamera {
     vec2 lastMousePos;
@@ -17,10 +18,10 @@ typedef struct MouseCamera {
 
     float FOV;
     float zoomLerp;
-} cam_contr_ext_data;
+} mouse_cam;
 
-void scobjAddMouseCamExtData(sc_obj* object, vec2 linSpeed, vec2 rotSpeed, float linAcc, float rotAcc, float linFric, float linFricFast, float rotFric) {
-    cam_contr_ext_data* new = malloc(sizeof(cam_contr_ext_data));
+void scobjAttachMouseCam(sc_obj* object, vec2 linSpeed, vec2 rotSpeed, float linAcc, float rotAcc, float linFric, float linFricFast, float rotFric) {
+    mouse_cam* new = malloc(sizeof(mouse_cam));
     new->lastMousePos = Vec2(0, 0);
     vec3 euler; quatToVec3_Euler_(&object->transform.rotation, &euler);
     new->rot.x = euler.y; new->rot.y = euler.x;
@@ -31,15 +32,15 @@ void scobjAddMouseCamExtData(sc_obj* object, vec2 linSpeed, vec2 rotSpeed, float
     new->rotFric = rotFric;
     new->linAcc = linAcc;
     new->rotAcc = rotAcc;
-    new->FOV = camGetFOV((cam*)scobjGetExtData(object, EXT_ID_CAMERA));
+    new->FOV = camGetFOV(scobjGetExtData(object, cam));
     new->zoomLerp = new->FOV;
     new->linVel = vec3_zero;
     new->rotVel = vec2_zero;
-    scobjAddExtDataP(object, EXT_ID_MOUSE_CAM, new, free);
+    scobjAddExtData(object, mouse_cam, new);
 }
 
 void mouseCamUpdate(sc_obj* cam) {
-    cam_contr_ext_data* data = scobjGetExtData(cam, EXT_ID_MOUSE_CAM);
+    mouse_cam* data = scobjGetExtData(cam, mouse_cam);
     trsfrm* t = &cam->transform;
     double dt = SL_min(TIME.dt, 1.0 / 30.0);
 
@@ -83,9 +84,13 @@ void mouseCamSetMousePos(mouse_cam* mc, vec2 mp) {
     mc->lastMousePos = mp;
 }
 
-sc_obj* mouseCam_addDefault(vec3* pos, quat* rot, float FOV, bool freeTransformData) {
-    sc_obj* camera = newCamera(pos, rot, NULL, freeTransformData, FOV, 0.03, 1000.0, SGE_BASE_WIDTH / (float)SGE_BASE_WIDTH);
-    scobjAddMouseCamExtData(camera, Vec2(1.5, 2.0), Vec2(100.0, 100.0), 100.0, 30.0, 10.0, 5.0, 35.0);
+sc_obj* mouseCam_addDefault(vec3 pos, quat rot, float FOV) {
+    sc_obj* camera = newCamera(pos, rot, NULL, FOV, 0.03, 1000.0, SGE_BASE_WIDTH / (float)SGE_BASE_WIDTH);
+    scobjAttachMouseCam(camera, Vec2(1.5, 2.0), Vec2(100.0, 100.0), 100.0, 30.0, 10.0, 5.0, 35.0);
     camera->update = (func_update*)&mouseCamUpdate;
     return camera;
+}
+
+void registerMouseCam() {
+    extDataRegister(&EXT_ID(mouse_cam), &free);
 }

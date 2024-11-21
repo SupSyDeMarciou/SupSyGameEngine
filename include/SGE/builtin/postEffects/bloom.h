@@ -5,7 +5,7 @@
 
 /// @brief Initialize the necessary shaders for bloom
 /// @return If the logic has been initialized
-bool initializeBloomLogic();
+bool initializeBloom();
 /// @brief Cleanly destroy all off the Bloom related memory
 void terminateBloomLogic();
 

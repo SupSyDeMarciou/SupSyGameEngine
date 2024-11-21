@@ -4,7 +4,7 @@
 static post_shader SSAO = -1;
 static vec3 randVec[SGE_SSAO_NB_RAND_VECT] = {0};
 static frame_buffer* ssaoTemp = NULL;
-bool initializeSSAOLogic() {
+bool initializeSSAO() {
     if (SSAO != -1) return false;
     SSAO = createPostProcessShader("!builtin/postEffects/SSAO.fs");
     shaderAttachUniformBufferBP(SSAO, SGE_SBU_BP_Camera);

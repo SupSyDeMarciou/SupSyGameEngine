@@ -1,16 +1,18 @@
 #include "trail.h"
+DEF_EXT_ID_C(trail)
 
 static shader trailShader = 0;
 static bool simulate = true;
 #define NB_PARTS 256
 struct Trail {
     sc_obj* source;
+
+    sc_obj* focusObject;
     float thickness, lifetime;
 
     vec3 positions[NB_PARTS + 1];
     uint vert;
     double lastTime;
-    sc_obj* focusObject;
 };
 
 typedef struct TrailMaterial {
@@ -25,11 +27,11 @@ static void trailMat_sendData(material* mat) {
 
 static void trail_onBeforeRender(sc_obj* self) {
     if (!simulate) return;
-    render_obj* ro = scobjGetExtData(self, EXT_ID_RENDER_OBJ);
-    trail* tr = scobjGetExtData(self, EXT_ID_TRAIL);
+    render_obj* ro = scobjGetExtData(self, render_obj);
+    trail* tr = scobjGetExtData(self, trail);
     mesh* m = ro->mesh;
 
-    cam* c = REGetRenderCamera(APP->renderEnvironment);
+    cam* c = REGetRenderCamera();
 
     vec3 wpos = scobjWorldPos(tr->focusObject);
     quat wrot = camGetScObj(c)->transform.rotation;
@@ -37,6 +39,7 @@ static void trail_onBeforeRender(sc_obj* self) {
     // tranposeQs(&wrot);
     vec3 wup = vec3_forward; 
     // rot3Qs(&wup, &wrot);
+
 
     for (uint i = 0; i < NB_PARTS + 1; i++) {
         uint j = (i + tr->vert + NB_PARTS + 2) % (NB_PARTS + 1);
@@ -78,7 +81,7 @@ sc_obj* newTrail(sc_obj* focusObject, float thickness, float lifetime, vec3 star
     new->lastTime = TIME.timeAtFrameStart;
     new->vert = 0;
 
-    new->source = newSceneObject((vec3*)&vec3_zero, (quat*)&quat_identity, (vec3*)&vec3_one, NULL, false, false, NULL);
+    new->source = newSceneObject(vec3_zero, quat_identity, vec3_one, NULL, false, NULL);
     if (!trailShader) trailShader = createSurfaceShader("!builtin/objects/trail.fs");
     trail_mat* trailMat = malloc(sizeof(trail_mat));
     trailMat->startingColor = startingColor;
@@ -109,12 +112,16 @@ sc_obj* newTrail(sc_obj* focusObject, float thickness, float lifetime, vec3 star
     }
     mesh* trailMesh = newMesh(2 * NB_PARTS + 2, vertices, 2 * NB_PARTS, triangles, 1, NULL);
     
-    scobjAddRenderObjectExtData_SingleMat(new->source, trailMesh, newMaterial(trailShader, trailMat_sendData, trailMat, free), true, RENDER_CULL_NONE, false, trail_onBeforeRender, NULL);
+    scobjAttachRenderObject_SingleMat(new->source, trailMesh, newMaterial(trailShader, trailMat_sendData, trailMat, free), true, RENDER_CULL_NONE, false, trail_onBeforeRender, NULL);
+    scobjAddExtData(new->source, trail, new);
 
-    scobjAddExtDataP(new->source, EXT_ID_TRAIL, (render_obj*)new, (func_free*)&free);
     return new->source;
 }
 
 void trailSimulate(bool b) {
     simulate = b;
+}
+
+void registerTrail() {
+    extDataRegister(&EXT_ID(trail), &free);
 }

@@ -1,8 +1,8 @@
 #version 330 core
 
-#include "!rendering/shaders/environment.glsl"
-#include "!rendering/shaders/camera.glsl"
-#include "!rendering/shaders/object.glsl"
+#include "!render/shaders/environment.glsl"
+#include "!render/shaders/camera.glsl"
+#include "!render/shaders/object.glsl"
 
 uniform vec4 mColor = vec4(1);
 uniform float mRoughness = 1.0;
