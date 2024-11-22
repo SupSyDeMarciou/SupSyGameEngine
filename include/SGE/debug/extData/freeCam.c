@@ -10,14 +10,14 @@ typedef struct P_FreeCam {
     float zoomLerp;
 } p_free_cam;
 
-void scobjAttachFreeCam(sc_obj* object, float linVel, float rotVel, float linAcc, float rotAcc, float linFric, float linFricFast, float rotFric) {
+free_cam* scobjAttachFreeCam(sc_obj* source, float linVel, float rotVel, float linAcc, float rotAcc, float linFric, float linFricFast, float rotFric) {
     p_free_cam* new = (p_free_cam*)malloc(sizeof(p_free_cam));
     new->public.linFricFast = linFricFast; new->public.linVel = linVel; new->public.rotVel = rotVel;
     new->public.linAcc = linAcc; new->public.rotAcc = rotAcc; new->public.linFric = linFric; new->public.rotFric = rotFric;
     
     new->linVel = vec3_zero; 
     new->rotVel = vec2_zero;
-    new->FOV = camGetFOV(scobjGetExtData(object, cam));
+    new->FOV = camGetFOV(scobjGetExtData(source, cam));
     new->zoomLerp = new->FOV;
     
     vec3 temp = vec3_zero; 
@@ -27,10 +27,12 @@ void scobjAttachFreeCam(sc_obj* object, float linVel, float rotVel, float linAcc
 
     new->rotPos = vec2_zero;
 
-    scobjAddExtData(object, free_cam, new);
+    scobjAddExtData(source, free_cam, new);
+
+    return (free_cam*)new;
 }
 
-void updateFreeCam(sc_obj* object) {
+void freeCamUpdate(sc_obj* object) {
     p_free_cam* data = (p_free_cam*)scobjGetExtData(object, free_cam);
     double dt = SL_min(TIME.dt, 1.0 / 30.0);
 
@@ -75,9 +77,9 @@ void updateFreeCam(sc_obj* object) {
 }
 
 sc_obj* freeCam_addDefault(vec3 pos, quat rot, float FOV) {
-    sc_obj* camera = newCamera(pos, rot, NULL, FOV, 0.03, 1000.0, SGE_BASE_WIDTH / (float)SGE_BASE_WIDTH);
+    sc_obj* camera = newSceneObject(pos, rot, vec3_one, NULL, false, &freeCamUpdate);
+    scobjAttachCamera(camera, FOV, 0.03, 1000.0, 1.0);
     scobjAttachFreeCam(camera, 2.0, 2.5, 100.0, 30.0, 10.0, 5.0, 35.0);
-    camera->update = (func_update*)&updateFreeCam;
     return camera;
 }
 

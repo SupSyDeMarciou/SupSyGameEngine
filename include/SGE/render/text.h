@@ -1,7 +1,7 @@
 #ifndef __SGE_RENDER_TEXT_H__
 #define __SGE_RENDER_TEXT_H__
 
-#include "../SGEstructures.h"
+#include "../SGEconstants.h"
 
 #include "render.h"
 #include "shaders/shaders.h"
@@ -59,10 +59,22 @@ typedef struct TextGlyphData {
     vec4 color;
     float size;
 } text_glyph_data;
+typedef enum TextAnchor {
+    TEXT_ANCHOR_LEFT = 0b00000001,
+    TEXT_ANCHOR_CENTER_H = 0b00000010,
+    TEXT_ANCHOR_RIGHT = 0b00000011,
 
+    TEXT_ANCHOR_TOP = 0b00000100,
+    TEXT_ANCHOR_CENTER_V = 0b00001000,
+    TEXT_ANCHOR_BOTTOM = 0b00001100,
+
+    TEXT_ANCHOR_CENTER = 0b00001010
+} text_anchor;
 typedef struct Text {
     font* f;                // font
-    mesh* m;                // quad, to be instanced 
+    mesh* m;                // quad, to be instanced
+
+    uint8 anchor;
     
     char16* text;
     float* textSize;
@@ -76,15 +88,16 @@ typedef struct Text {
 
     int16 fontSpaceH;       // character horizontal spacing
     int16 fontSpaceV;       // character vertical spacing
-    vec2 boxSize;           // size (in world) in which to fit the text
+    vec2 boxSize;           // Max size in which to fit the text
+    vec2 trueBoxSize;       // Size of the box currently containing all text
 
     GLuint instanceVbo;     // instance vbo
     bool synched;           // wether the data is synchronized on GPU
 } text;
 
-text* newText(font* f, char16* str, vec2 boxSize);
-text* newText_Base(font* f, char16* str, vec2 boxSize, float baseFontSize, vec4 baseFontColor);
-text* newText_Advanced(font* f, char16* str, vec2 boxSize, float baseFontSize, vec4 baseFontColor, int16 fontSpaceH, int16 fontSpaceV);
+text* newText(font* f, char16* str, vec2 boxSize, text_anchor anchor);
+text* newText_Base(font* f, char16* str, vec2 boxSize, text_anchor anchor, float baseFontSize, vec4 baseFontColor);
+text* newText_Advanced(font* f, char16* str, vec2 boxSize, text_anchor anchor, float baseFontSize, vec4 baseFontColor, int16 fontSpaceH, int16 fontSpaceV);
 void freeText(text* toFree);
 void textMarkUnsynched(text* t);
 

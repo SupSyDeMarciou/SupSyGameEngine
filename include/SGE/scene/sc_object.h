@@ -2,13 +2,12 @@
 #define __SGE_SCENE_SC_OBJECT_H__
 
 #include <stdarg.h>
-#include "../SGEstructures.h"
+#include "../SGEconstants.h"
 
 #include "../render/mesh.h"
 #include "../render/material.h"
 
 
-#define EXT_ID_trsfrm 0
 /// @brief Structure representing an object's spacial coordinates
 typedef struct Transform trsfrm;
 struct Transform {
@@ -153,15 +152,12 @@ typedef struct Camera cam;
 DEF_EXT_ID(cam)
 
 /// @brief Create a new camera object
-/// @param position The initial position of the object in world-space
-/// @param rotation The initial rotation of the object in world-space
-/// @param parent The parent of the object's transform (May be NULL)
-/// @param FOV The Field Of View of the camera (In degrees)
+/// @param FOV The Field Of View of the camera
 /// @param nearClippingPlane The shortest visible distance
 /// @param farClippingPlane The furthest visible distance
-/// @param screenRatio The width-to-height ratio of the camera
+/// @param renderRatio The width-to-height ratio of the camera
 /// @return The newly created camera
-sc_obj* newCamera(vec3 position, quat rotation, trsfrm* parent, float FOV, float nearClippingPlane, float farClippingPlane, float screenRatio);
+cam* scobjAttachCamera(sc_obj* source, float FOV, float nearClippingPlane, float farClippingPlane, float renderRatio);
 
 /// @brief Change the camera's Field Of View
 /// @param camera The camera to modify

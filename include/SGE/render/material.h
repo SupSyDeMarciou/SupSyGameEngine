@@ -1,7 +1,7 @@
 #ifndef __SGE_RENDER_MATERIAL_H__
 #define __SGE_RENDER_MATERIAL_H__
 
-#include "../SGEstructures.h"
+#include "../SGEconstants.h"
 
 #include "shaders/shaders.h"
 #include "textures/texture.h"

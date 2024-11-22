@@ -1,7 +1,6 @@
 #ifndef __SGE_RENDER_TEXTURES_FRAME_BUFFER_H__
 #define __SGE_RENDER_TEXTURES_FRAME_BUFFER_H__
 
-#include "../../SGEstructures.h"
 #include "texture.h"
 
 typedef enum DepthStencilFormat {

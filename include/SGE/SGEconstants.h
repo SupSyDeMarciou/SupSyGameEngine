@@ -1,5 +1,5 @@
-#ifndef __SGE_STRUCTURES_H__
-#define __SGE_STRUCTURES_H__
+#ifndef __SGE_CONSTANTS_H__
+#define __SGE_CONSTANTS_H__
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -15,10 +15,6 @@ static volatile char* SGE_ROOT_PATH = "C:/msys64/mingw64/include/SupSy/SGE"; // 
 #ifndef SGE_BASE_HEIGHT
 #   define SGE_BASE_HEIGHT 1080
 #endif
-
-typedef struct Application application;
-typedef struct Scene scene;
-typedef struct RenderEnvironment render_env;
 
 #define SGE_REND_ENV_MAX_OBJECTS_TO_RENDER 8192
 #define SGE_REND_ENV_MAX_LIGHTS_TO_RENDER 128

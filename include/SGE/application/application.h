@@ -3,12 +3,11 @@
 
 #include <stdarg.h>
 
-#include "../SGEstructures.h"
+#include "../SGEconstants.h"
 #include "../scene/scene.h"
 #include "../render/render.h"
 
-struct Application
-{
+typedef struct Application {
     GLFWwindow* window;
     render_env* renderEnvironment;
     scene scene;
@@ -17,7 +16,7 @@ struct Application
     char fpsString[512];
 
     bool shouldClose;
-};
+} application;
 extern application* APP;
 
 extern struct Time {
@@ -48,6 +47,9 @@ void appWindowSetFocus();
 /// @brief Check if the application should close
 /// @return If the application should close
 bool appShouldClose();
+/// @brief Set wether the application should close at the end of the current frame
+/// @param value Wether the window should close
+void appSetShouldClose(bool value);
 
 
 ///////////////////////////////////////////////////////////////////////////////////

@@ -1,3 +1,5 @@
+uniform float u_Ratio;
+
 layout (std140) uniform Camera {
     float u_CamNearPlane, u_CamFarPlane, u_CamWidth, u_CamHeight;
     vec3 u_CamPosition;

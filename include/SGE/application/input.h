@@ -1,7 +1,7 @@
 #ifndef __SGE_APP_INPUT
 #define __SGE_APP_INPUT
 
-#include "../SGEstructures.h"
+#include "../SGEconstants.h"
 
 /// @brief The possible states for a key
 enum SGE_Key_State {
@@ -70,6 +70,7 @@ enum SGE_Key {
     SGE_KEY_ENTER = GLFW_KEY_ENTER,
     SGE_KEY_RETURN = GLFW_KEY_BACKSPACE,
     SGE_KEY_TAB = GLFW_KEY_TAB,
+    SGE_KEY_ESCAPE = GLFW_KEY_ESCAPE,
 
     SGE_KEY_RIGHT = GLFW_KEY_RIGHT,
     SGE_KEY_LEFT = GLFW_KEY_LEFT,

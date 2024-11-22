@@ -1,7 +1,7 @@
 #ifndef __SGE_RENDER_TEXTURES_TEXTURE_H__
 #define __SGE_RENDER_TEXTURES_TEXTURE_H__
 
-#include "../../SGEstructures.h"
+#include "../../SGEconstants.h"
 #include "../shaders/shader.h"
 
 /// @brief Color components in texture (R, G, B and A + linear?)

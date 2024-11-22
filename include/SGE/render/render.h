@@ -1,7 +1,7 @@
 #ifndef __SGE_RENDER_RENDER_H__
 #define __SGE_RENDER_RENDER_H__
 
-#include "../SGEstructures.h"
+#include "../SGEconstants.h"
 
 #include "../scene/scene.h"
 #include "light.h"
@@ -91,10 +91,10 @@ void* RESetBackground(shader (*backgroundRenderFunc)(void*), void* backgroundDat
 /// @return The current background data
 void* REGetBackgroundData();
 
-void REUpdateGPUEnvironmentData();
-void REUpdateGPUCameraData(cam* camera);
-void REUpdateGPURenderObjectData(render_obj* ro);
-void REUpdateGPURenderObjectData_Calculate(sc_obj* obj);
+void REUpdateGPUEnvironmentBuffer();
+void REUpdateGPUCameraBuffer(cam* camera);
+void REUpdateGPUObjectBuffer(render_obj* ro);
+void REUpdateGPUObjectBuffer_Calculate(sc_obj* obj);
 /// @brief Render every object in the scene
 void RERenderScene();
 /// @brief Render every object in the scene to the specified frame buffer

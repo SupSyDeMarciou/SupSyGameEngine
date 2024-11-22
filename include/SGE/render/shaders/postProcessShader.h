@@ -1,7 +1,6 @@
 #ifndef __SGE_RENDER_SHADERS_POST_PROCESS_SHADER_H__
 #define __SGE_RENDER_SHADERS_POST_PROCESS_SHADER_H__
 
-#include "../../SGEstructures.h"
 #include "shader.h"
 #include "../textures/frameBuffer.h"
 

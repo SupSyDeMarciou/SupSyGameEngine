@@ -20,13 +20,13 @@ typedef struct MouseCamera {
     float zoomLerp;
 } mouse_cam;
 
-void scobjAttachMouseCam(sc_obj* object, vec2 linSpeed, vec2 rotSpeed, float linAcc, float rotAcc, float linFric, float linFricFast, float rotFric) {
+mouse_cam* scobjAttachMouseCam(sc_obj* object, vec2 linVel, vec2 rotVel, float linAcc, float rotAcc, float linFric, float linFricFast, float rotFric) {
     mouse_cam* new = malloc(sizeof(mouse_cam));
     new->lastMousePos = Vec2(0, 0);
     vec3 euler; quatToVec3_Euler_(&object->transform.rotation, &euler);
     new->rot.x = euler.y; new->rot.y = euler.x;
-    new->linSpeed = linSpeed;
-    new->rotSpeed = rotSpeed;
+    new->linSpeed = linVel;
+    new->rotSpeed = rotVel;
     new->linFric = linFric;
     new->linFricFast = linFricFast;
     new->rotFric = rotFric;
@@ -34,9 +34,11 @@ void scobjAttachMouseCam(sc_obj* object, vec2 linSpeed, vec2 rotSpeed, float lin
     new->rotAcc = rotAcc;
     new->FOV = camGetFOV(scobjGetExtData(object, cam));
     new->zoomLerp = new->FOV;
+
     new->linVel = vec3_zero;
     new->rotVel = vec2_zero;
     scobjAddExtData(object, mouse_cam, new);
+    return new;
 }
 
 void mouseCamUpdate(sc_obj* cam) {
@@ -85,9 +87,9 @@ void mouseCamSetMousePos(mouse_cam* mc, vec2 mp) {
 }
 
 sc_obj* mouseCam_addDefault(vec3 pos, quat rot, float FOV) {
-    sc_obj* camera = newCamera(pos, rot, NULL, FOV, 0.03, 1000.0, SGE_BASE_WIDTH / (float)SGE_BASE_WIDTH);
+    sc_obj* camera = newSceneObject(pos, rot, vec3_one, NULL, false, &mouseCamUpdate);
+    scobjAttachCamera(camera, FOV, 0.03, 1000.0, 1.0);
     scobjAttachMouseCam(camera, Vec2(1.5, 2.0), Vec2(100.0, 100.0), 100.0, 30.0, 10.0, 5.0, 35.0);
-    camera->update = (func_update*)&mouseCamUpdate;
     return camera;
 }
 

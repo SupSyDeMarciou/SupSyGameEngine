@@ -1,7 +1,6 @@
 #ifndef __SGE_SCENE_SCENE_H__
 #define __SGE_SCENE_SCENE_H__
 
-#include "../SGEstructures.h"
 #include "sc_object.h"
 
 typedef struct Scene {

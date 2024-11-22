@@ -16,7 +16,6 @@ layout (std430) buffer FontContourEnds {
     uint b_FontContourEnds[];
 };
 
-uniform float u_Ratio;
 uniform uint u_EM;
 uniform vec2 u_Position;
 

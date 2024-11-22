@@ -11,6 +11,8 @@ layout (location = 5) in uint aTextIdx;
 layout (location = 6) in vec4 aTextCol;
 layout (location = 7) in float aTextSize;
 
+uniform float u_Ratio;
+
 out vec2 TexCoords;
 flat out uint GlyphIdx;
 flat out vec4 GlyphCol;

@@ -1,9 +1,10 @@
 #ifndef __SGE_RENDER_MESH_H__
 #define __SGE_RENDER_MESH_H__
 
-#include "../SGEstructures.h"
+#include "../SGEconstants.h"
 
 #include "shaders/shaders.h"
+#include "material.h"
 
 
 /// @brief Unit of data sent to the GPU
@@ -89,7 +90,6 @@ mesh* meshMerge(mesh* a, mesh* b);
 // (i) Set freeTransforms to TRUE to automaticaly free all transforms
 mesh* meshMergeTransform(mesh* a, vec3* positionA, quat* rotationA, vec3* scaleA, mesh* b, vec3* positionB, quat* rotationB, vec3* scaleB, bool freeTransforms);
 
-#include "material.h"
 // Render the mesh to the screen
 void meshRender(mesh* m, material** materials);
 void meshRenderSimple(mesh* m, shader s);

@@ -1,7 +1,6 @@
 #ifndef __SGE_RENDER_SHADERS_SHADER_H__
 #define __SGE_RENDER_SHADERS_SHADER_H__
 
-#include "../../SGEstructures.h"
 #include "buffers.h"
 
 /// @brief Set the default path from which to look for shaders when only giving their file names

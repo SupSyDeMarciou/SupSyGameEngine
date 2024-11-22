@@ -9,6 +9,5 @@ void main()
     ivec2 uv = ivec2(gl_GlobalInvocationID.xy);
     ivec2 sizeS = imageSize(Source);
     ivec2 sizeD = imageSize(Destination);
-    // imageStore(Destination, uv, imageLoad(Source, ivec2(uv * sizeS / vec2(sizeD))));
     imageStore(Destination, uv, imageLoad(Source, uv));
 }

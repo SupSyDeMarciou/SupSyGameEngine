@@ -1,7 +1,7 @@
 #ifndef __SGE_RENDER_SHADERS_BUFFERS_H__
 #define __SGE_RENDER_SHADERS_BUFFERS_H__
 
-#include "../../SGEstructures.h"
+#include "../../SGEconstants.h"
 
 typedef struct ShaderBufferUniform shader_buff_uni;
 typedef struct ShaderBufferUniform_BindingPoint {

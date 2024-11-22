@@ -11,14 +11,14 @@ typedef struct DaylightCycle {
 } daylight_cycle;
 DEF_EXT_ID(daylight_cycle)
 
-/// @brief Add a new free cam external data block
+/// @brief Add a new daylightCycle external data block
 /// @param source The scene object to which this data is to be added
 /// @param rotationAxis The axis arround which to rotate the sun
 /// @param revolutionTime The time it takes to make a full revolution in seconds
 /// @param initialAngle The initial angle of the sun in the sky
 void scobjAttachDaylightCycle(sc_obj* source, vec3 rotationAxis, double revolutionTime, double initialAngle);
 
-/// @brief The update function associated with 'FreeCamExternalData'
+/// @brief The update function associated with 'daylight_cycle'
 /// @param object The object on which to call the update function
 void updateDaylightCycle(sc_obj* object);
 
