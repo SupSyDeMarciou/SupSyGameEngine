@@ -104,7 +104,7 @@ We can incorporate the entire *update* and *render* loops as such:
         registerMouseCam(); // Register the "mouse_cam" external data
 
         // Create camera to be used for rendering
-        sc_obj* cameraObj = mouseCam_addDefault(Vec3(0, 1, 0), quat_identity, 60);
+        sc_obj* cameraObj = mouseCam_addDefault(Vec3(0, 1, 0), quat_identity, 60*DEG_TO_RAD);
         cam* cameraData = scobjGetExtData(cameraObj, cam);
         RESetRenderCamera(cameraData);
 
@@ -135,7 +135,7 @@ We can incorporate the entire *update* and *render* loops as such:
             mulQ_(&rot, &sunRot, &sun->transform.rotation);
 
             sceneUpdate(APP->scene);                // Update all scene objects which are active, non-static and have an update function. In this case, only the camera.
-            RErenderScene();                        // Render all of the objects with render object external data. In this case, only the plane.
+            RERenderScene();                        // Render all of the objects with render object external data. In this case, only the plane.
             blitHdrToLdrFB(REoutput, fb);           // Convert High Dynamic Range render into Low Dynamic Range
             blitToScreenFB(fb);                     // Finaly show our final result on screen!
 
