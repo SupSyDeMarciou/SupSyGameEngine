@@ -1,0 +1,1 @@
+char* SGE_ROOT_PATH = "C:/msys64/mingw64/include/SupSy/SGE";

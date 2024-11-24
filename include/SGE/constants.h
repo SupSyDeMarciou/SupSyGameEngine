@@ -7,7 +7,7 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "../SL.h" // Change to the path to the SL on your machine
-static volatile char* SGE_ROOT_PATH = "C:/msys64/mingw64/include/SupSy/SGE"; // Change to path to the SGE on your machine
+extern char* SGE_ROOT_PATH; // Change to path to the SGE on your machine
 
 #ifndef SGE_BASE_WIDTH
 #   define SGE_BASE_WIDTH 1920
