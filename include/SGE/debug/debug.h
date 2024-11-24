@@ -1,7 +1,7 @@
 #ifndef __SGE_DEBUG_DEBUG
 #define __SGE_DEBUG_DEBUG
 
-#include "../SGEstructures.h"
+#include "../constants.h"
 #include "../render/textures/frameBuffer.h"
 
 #pragma region DRAWING

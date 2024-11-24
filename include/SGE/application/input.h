@@ -1,7 +1,7 @@
 #ifndef __SGE_APP_INPUT
 #define __SGE_APP_INPUT
 
-#include "../SGEconstants.h"
+#include "../constants.h"
 
 /// @brief The possible states for a key
 enum SGE_Key_State {

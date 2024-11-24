@@ -1,8 +1,6 @@
 #ifndef __SGE_RENDER_RENDER_H__
 #define __SGE_RENDER_RENDER_H__
 
-#include "../SGEconstants.h"
-
 #include "../scene/scene.h"
 #include "light.h"
 #include "renderObject.h"
@@ -11,7 +9,7 @@
 typedef struct SkyVariables sky_vars;
 void REbackground_skySetColors(vec3 sunColorDay, vec3 sunColorNoon, vec3 skyColorDay, vec3 skyColorNoon, vec3 skyColorNight);
 bool REbackground_skySetSun(light* l);
-shader REbackground_skyRender();
+shader REbackground_skyRender(void* data);
 
 
 typedef struct RenderEnvironment render_env;

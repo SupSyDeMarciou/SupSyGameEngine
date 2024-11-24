@@ -1,7 +1,6 @@
 #ifndef __SGE_RENDER_LIGHT_H__
 #define __SGE_RENDER_LIGHT_H__
 
-#include "../SGEconstants.h"
 #include "../scene/sc_object.h"
 
 /// @brief Type of a light external data

@@ -1,0 +1,27 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "Build program",
+			"command": "gcc.exe",
+			"args": [
+				"-fdiagnostics-color=always",
+				"-g",
+				"${workspaceFolder}\\**.c",
+
+				"-lSGE_b",
+				"-lSGE",
+				"-lSL",
+				
+				"C:\\msys64\\mingw64\\include\\glad\\glad.c",
+				"C:\\msys64\\mingw64\\bin\\glfw3.dll",
+				"-lopengl32",
+				"-lgdi32",
+
+				"-o",
+				"${workspaceFolder}\\main.exe",
+			],
+		}
+	]
+}

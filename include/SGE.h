@@ -1,7 +1,7 @@
 #ifndef __SGE_H__
 #define __SGE_H__
 
-#include "SGE/SGEconstants.h"
+#include "SGE/constants.h"
 
 #include "SGE/application/application.h"
 #include "SGE/application/input.h"

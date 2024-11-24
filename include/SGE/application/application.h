@@ -3,7 +3,7 @@
 
 #include <stdarg.h>
 
-#include "../SGEconstants.h"
+#include "../constants.h"
 #include "../scene/scene.h"
 #include "../render/render.h"
 

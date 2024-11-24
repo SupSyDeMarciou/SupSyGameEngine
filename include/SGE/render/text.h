@@ -1,7 +1,7 @@
 #ifndef __SGE_RENDER_TEXT_H__
 #define __SGE_RENDER_TEXT_H__
 
-#include "../SGEconstants.h"
+#include "../constants.h"
 
 #include "render.h"
 #include "shaders/shaders.h"

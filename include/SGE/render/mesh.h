@@ -1,8 +1,6 @@
 #ifndef __SGE_RENDER_MESH_H__
 #define __SGE_RENDER_MESH_H__
 
-#include "../SGEconstants.h"
-
 #include "shaders/shaders.h"
 #include "material.h"
 

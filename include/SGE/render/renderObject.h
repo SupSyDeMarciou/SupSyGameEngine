@@ -1,8 +1,6 @@
 #ifndef __SGE_RENDER_RENDER_OBJECT_H__
 #define __SGE_RENDER_RENDER_OBJECT_H__
 
-#include "../SGEconstants.h"
-
 #include "../scene/sc_object.h"
 #include "mesh.h"
 #include "material.h"

@@ -2,7 +2,7 @@
 #define __SGE_SCENE_SC_OBJECT_H__
 
 #include <stdarg.h>
-#include "../SGEconstants.h"
+#include "../constants.h"
 
 #include "../render/mesh.h"
 #include "../render/material.h"
@@ -27,7 +27,7 @@ typedef void func_free(void* toFree);
 #define DEF_EXT_ID(type) extern const volatile uint EXT_ID_##type;
 #define DEF_EXT_ID_C(type) const volatile uint EXT_ID_##type = 0;
 /// @brief Register an external data block
-/// @param id "EXT_ID(type)"
+/// @param id must be "&EXT_ID(type)"
 /// @param f The function to free the data stored in this block
 void extDataRegister(const volatile uint* id, func_free* f);
 

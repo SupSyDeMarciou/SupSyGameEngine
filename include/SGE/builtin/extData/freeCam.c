@@ -72,7 +72,7 @@ void freeCamUpdate(sc_obj* object) {
     scale3_s(addS3_s(&data->linVel, &mouvement, dt * data->public.linAcc), 1.0 - (speedyBoi ? data->public.linFricFast : data->public.linFric) * dt);
     addS3_s(&object->transform.position, &data->linVel, dt);
 
-    data->zoomLerp = SL_lerp(data->zoomLerp, inputIsKeyDown(SGE_KEY_C) ? 5.0 : data->FOV * (speedyBoi ? 1.35 : 1.0), dt * 15.0);
+    data->zoomLerp = SL_lerp(data->zoomLerp, inputIsKeyDown(SGE_KEY_C) ? 5.0*DEG_TO_RAD : data->FOV * (speedyBoi ? 1.35 : 1.0), dt * 15.0);
     if (REGetRenderCamera(APP->renderEnvironment)) camSetFOV(REGetRenderCamera(APP->renderEnvironment), data->zoomLerp);
 }
 

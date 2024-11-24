@@ -12,11 +12,9 @@ DEF_EXT_ID(mouse_cam)
 /// @param linVel The maximum linear velocity
 /// @param rotVel The maximum angular velocity
 /// @param linAcc The linear acceleration
-/// @param rotAcc The rotational acceleration
 /// @param linFric The linear friction
 /// @param linFricFast The linear friction when speeding
-/// @param rotFric The rotational friction
-mouse_cam* scobjAttachMouseCam(sc_obj* object, vec2 linVel, vec2 rotVel, float linAcc, float rotAcc, float linFric, float linFricFast, float rotFric);
+mouse_cam* scobjAttachMouseCam(sc_obj* object, vec2 linVel, vec2 rotVel, float linAcc, float linFric, float linFricFast);
 /// @brief The update function associated with 'mouse_cam'
 /// @param object The object on which to call the update function
 void mouseCamUpdate(sc_obj* object);

@@ -1,16 +1,16 @@
 # SUPSY GAME ENGINE
 ## Introduction
-The SupSyGameEngine (SGE) is a custom game engine which aims at making it very easy to start a new project. This project is mainly a learning experiment, but I have already used it in other projects for prototyping with great success.
+The **SupSyGameEngine (SGE)** is a custom game engine. It aims at making the process of startig a fresh new project fast and painless. This project is mainly a learning experiment on the methods used for rendering and scene management, but I have already used it in other projects for prototyping with great success (see `examples` folder).
 
 ## /!\ IMPORTANT /!\
-The SGE is a work in progress, therefore it has a few quirks and is not as polished as I want it to be. Some functions don't yet have a full description and some importing formats are currently either only partially supported or not supported at all (even though their names appear in the code). In addition, there still isn't a proper system for disposing of the objects allocated during the lifetime of the program when it terminates (meaning it is the user's responsability to deallocate all of the objects he created, which is not ideal).
-Finally, functions and types names may change in the future to better fit together in a cohesive way and some core functionalities may still very much change (**external data** is a prime example of that). All that to say that in its current form the SGE does not attempt in any way to be retro-compatible as I believe that my ability to organize and name things can only improve (this is my first big project, I still have a lot to learn).
+The SGE is a work in progress, it therefore has a few quirks and lacks polish. Some functions don't yet have a full description, implementation and some importing formats are currently either only partially supported or not supported at all (even when their names appear in the code). In addition, there still isn't a proper system for disposing of the memory allocated during the lifetime of the program when it terminates (meaning it is the user's responsability to deallocate all of the SGE objects he created, which is not ideal).
+Finally, function and type names may change in the future to better fit together in a cohesive way and some core functionalities may still very much change (**external data** has been a prime example of that inconsistancy throughout developpment). All that to say that in its current form the SGE does not attempt in any way to be retro-compatible as I believe that my ability to organize and name things can only improve (this is my first big project, I still have a lot to learn), thus any project made using this engine **in its current state** must be manually updated when the library is too.
 
 ## Prerequisites
-The SGE currently depends on three libraries:
+The **SGE** currently depends on three libraries:
 - The [**SupSyLibraries**](https://github.com/SupSyDeMarciou/SupSyLibraries), developped by yours truly.
 - [**GLFW3**](https://www.glfw.org/) for creating the window, OpenGL context and for accessing the mouse and keyboard inputs.
-- [**GLAD**](https://glad.dav1d.de/#language=c&specification=gl&api=gl%3D4.6&api=gles1%3Dnone&api=gles2%3Dnone&api=glsc2%3Dnone&profile=compatibility&loader=on) with at least the specifications baked into this link.
+- [**GLAD**](https://glad.dav1d.de/#language=c&specification=gl&api=gl%3D4.6&api=gles1%3Dnone&api=gles2%3Dnone&api=glsc2%3Dnone&profile=compatibility&loader=on) with at least the specifications baked into this link for OpenGL bindings.
 
 In addition, after downloading the library, make sure to change the value `SGE_ROOT_PATH` line 10 in file `include/SGE/constants.h` to the path of the `SGE/..` folder on your machine, as the SGE needs to have access to it when loading built-in shaders (and other built-in files I might want to add later on). Also, if the **SL** is not in the same folder as the **SGE**, make sure to modify the `#include` in line 9 of `include/SGE/constants.h`. Those, saddly, are some of the quirks mentionned above.
 
@@ -43,7 +43,8 @@ As long as the OpenGL context has been created and is maintained, these structur
 - `font`, `text` and `text3D`: Enables the import of any TTF font and rendering of text, both in 2D and 3D. In particluar, `text3D` is an **external data**. These have their own methods under the prefix `font`, `text` and `text3D`.
 - `light`: Represents a light in 3D space that is either of type `LIGHT_TYPE_DIRECTIONAL`, `LIGHT_TYPE_POINT`, `LIGHT_TYPE_SPOT` or `LIGHT_TYPE_AREA`. These lights can then be accessed in shaders to shade objects accordingly. It has its own *methods* under the prefix `light`.
 
-Furthermore, a few useful libraries have been created under `!render/shaders/` such as `object.glsl`, `camera.glsl` and `environment.glsl` which have corresponding `SGE_SBU_BP_Object`, `SGE_SBU_BP_Camera` and `SGE_SBU_BP_Environment` *shader uniform binding point*s. They can be used by calling the `#include "..."` macro, which has been defined. As of now, it works by pasting the code contained inside of the file directly in the place of the macro invocation.
+Furthermore, a few useful libraries have been created under `!render/shaders/` such as `object.glsl`, `camera.glsl` and `environment.glsl` which have corresponding `SGE_SBU_BP_Object`, `SGE_SBU_BP_Camera` and `SGE_SBU_BP_Environment` *shader uniform binding point*s. They can be used by calling the `#include "..."` macro, which has been defined when using the **SGE**. As of now, it works by pasting the code contained inside of the file directly in the place of the macro invocation. <br>
+I might implement other macros such as `#request "..."` to have a specific uniform be automaticaly updated when rendering with this shader, or have an *SBU* or *SBS* attached to the shader without having to manually do it; or `#vertex "..."`, `#fragment "..."`, etc.. to be able to specify multiple shaders for a shader program in a single source file.
 
 ### Scene
 The **scene** holds the list of all **scene object**s. Its only useful *method* (currently) is `sceneUpdate` which calls the update function on all of the objects eligible for updates.
@@ -65,6 +66,17 @@ A few utility functions are grouped under the prefix `input` and deal with *keyb
 Currently a bit light in features. <br>
 Functions with prefix `debugDraw` allow for the rendering of primitive shapes with bezier curves for debugging purposes. The thickness and color of the splines can be changes using `void debugDraw_SetLineWidth(float width);` and `void debugDraw_SetColor(vec3 color);`. These parameters then apply for the following splines. <br>
 Functions with prefix `debugTimer` can be used for basic timing.
+
+### Others
+Some of the types mentionned above can be directly imported into the project from an outside file by using a path to said file. <br>
+When using this feature, the user can either input a *full path* (startig from the root), a *relative path* (which is relative to a specific folder depending on the file type) or a *SGE path* (which is relative to the **SGE** folder on your machine). A *relative path* can be modified by using the `void [myType]SetDefaultPath(const char* newPath)` methods. A *SGE path* is specified by starting the string with `!` (for example: `!render/shaders/camera.glsl`). <br>
+Types which may be imported include:
+- `shader`: You can load shader source code from a text file. The file extension thus does not matter, but I would recommend sticking with the naming convention already in place where
+    - `.fs` -> Fragment shader source code
+    - `.vs` -> Vertex shader source code
+    - `.gs` -> Geometry shader source code
+    - `.cs` -> Compute shader source code
+    - `.glsl` -> Library source code
 
 ----
 
@@ -131,7 +143,7 @@ We can incorporate the entire *update* and *render* loops as such:
             startFrameUpdate(); // Setup the inputs, timers, queries, etc...
 
             // Rotate the sun around the X axis each frame to have a daylight cycle
-            quat rot = Quat_Euler(0.0, PI / 25.0 * TIME.dt, 0.0);
+            quat rot = Quat_Euler(0.0, PI / 60.0 * TIME.dt, 0.0);
             mulQ_(&rot, &sunRot, &sun->transform.rotation);
 
             sceneUpdate(APP->scene);                // Update all scene objects which are active, non-static and have an update function. In this case, only the camera.
