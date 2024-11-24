@@ -8,7 +8,7 @@ bool initializeBloom() {
     return true;
 }
 void terminateBloomLogic() {
-    freeShader(bloom);
+    destroyShader(bloom);
 }
 
 void blitBloom(texture2D* source, frame_buffer* dest, uint nbIter, float intensity) {

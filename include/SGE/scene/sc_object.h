@@ -194,4 +194,11 @@ sc_obj* camGetScObj(cam* c);
 
 void camPrepareForRender(cam* c);
 
+/// @brief Convert position in screen-space coordinates into world-space coordinates
+/// @param screenPos The position in screen-space
+/// @param distance The distance from the camera of the converted coordinate
+/// @return The converted position in world-space
+/// @note The convertion depends on the current rendering camera
+vec3 camScreenToWorld(vec2 screenPos, float distance);
+
 #endif

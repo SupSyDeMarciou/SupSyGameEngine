@@ -98,8 +98,4 @@ void debugTimer_Print(timer ID);
 /// @brief Print an OpenGL error message if one is present
 void debugCheckGLError();
 
-/// @brief Initialize debugging tools
-/// @return Wether "debug" has been initialized
-bool initializeDebug();
-
 #endif

@@ -19,7 +19,14 @@ enum LightAreaShape {
     LIGHT_SHAPE_DISK,
 };
 
-typedef struct Light light;
+typedef struct Light {
+    enum LightType type;
+    vec3 color;
+    float falloff;
+    float radius;
+    float angle;
+    enum LightAreaShape shape;
+} light;
 DEF_EXT_ID(light)
 
 light* scobjAttachLight_Directional(sc_obj* source, vec3 color);
@@ -30,12 +37,13 @@ light* scobjAttachLight_Spot(sc_obj* source, vec3 color, float fallOff, float ra
 /// @param l The light
 /// @return The owning scene object
 sc_obj* lightGetScObj(light* l);
-/// @brief Set the coolor of a light
-/// @param l The light to set
-/// @param newColor The new color to apply
-void lightSetColor(light* l, vec3 newColor);
-/// @brief Get the type of a light
-/// @return The type of the light
-enum LightType lightGetType(light* l);
+/// @brief Get the size of an area light
+/// @param l The area light
+/// @return The size of the area light
+vec2 lightAreaGetSize(light* l);
+/// @brief Set the size of an area light
+/// @param l The area light
+/// @param newColor The new size to apply
+void lightAreaSetSize(light* l, vec2 size);
 
 #endif

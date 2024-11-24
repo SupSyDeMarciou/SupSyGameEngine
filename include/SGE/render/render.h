@@ -6,18 +6,20 @@
 #include "renderObject.h"
 
 
-typedef struct SkyVariables sky_vars;
-void REbackground_skySetColors(vec3 sunColorDay, vec3 sunColorNoon, vec3 skyColorDay, vec3 skyColorNoon, vec3 skyColorNight);
-bool REbackground_skySetSun(light* l);
-shader REbackground_skyRender(void* data);
 
-
+typedef shader func_backgroundRender(void);
+typedef struct REBackground {
+    void* data;
+    func_free* freeData;
+    func_backgroundRender* render;
+} re_background;
 typedef struct RenderEnvironment render_env;
+
+#include "../builtin/backgrounds/simpleSky.h"
 
 /// @brief Create a render environment
 /// @return The newly created render environment
 render_env* newRenderEnvironnment();
-
 /// @brief Destroy a render environment
 /// @param toDestroy The render environment to destroy
 void freeRenderEnvironment(render_env* toDestroy);
@@ -25,7 +27,6 @@ void freeRenderEnvironment(render_env* toDestroy);
 /// @brief Set rendering camera for the render environment
 /// @param camera The new rendering camera
 void RESetRenderCamera(cam* camera);
-
 /// @brief Get rendering camera for the render environment 
 /// @return The current rendering camera
 cam* REGetRenderCamera();
@@ -51,11 +52,11 @@ bool REAddLight(render_env* re, light* toAdd);
 /// @param toAdd The light to remove
 /// @return Wether a light was removed
 bool RERemoveLight(render_env* re, light* toRemove);
-
-/// @brief Send the environment data (camera included) to the shader
-/// @param s The recieving shader
-/// @param re The render environment from which to extract the data
-void shaderSendEnvironmentData(shader s);
+/// @brief Get index of light in lights array
+/// @param re The render environment to search through
+/// @param l The light to find the index of
+/// @return The index of the light in the lights array OR -1 if not found in array
+int REGetLightIndex(render_env* re, light* l);
 
 /// @brief Set the current screen size
 /// @param size New size
@@ -67,32 +68,38 @@ uvec2 REGetCurrentSize();
 /// @return The current screen ratio
 float REGetScreenRatio();
 
-/// @brief Render the screen quad
-/// @param re The render environment
-/// @param s The shader to use for rendering it
-void RERenderQuad(render_env* re, shader s);
+/// @brief Set the ambiant color of this environment
+/// @param newColor The new color to use
+void RESetAmbiantColor(vec3 newColor);
+/// @brief Set the background for the renders
+/// @param bg The new background to use
+void RESetBackground(re_background bg);
+/// @brief Get the current background data
+/// @return The current background data
+void* REGetBackground();
 
 /// @brief Get the scene output render buffer
 /// @param re The render environment
 /// @return The output render buffer
 frame_buffer* REGetOutputFB(render_env* re);
 
-/// @brief Set the ambiant color of this environment
-/// @param newColor The new color to use
-void RESetAmbiantColor(vec4 newColor);
-/// @brief Set the background for the renders
-/// @param backgroundRenderFunc The function which sends all the necessary data before rendering
-/// @param backgroundData Additionnal data
-/// @return The last background data which was stored
-void* RESetBackground(shader (*backgroundRenderFunc)(void*), void* backgroundData);
-/// @brief Get the current background data
-/// @return The current background data
-void* REGetBackgroundData();
+
 
 void REUpdateGPUEnvironmentBuffer();
 void REUpdateGPUCameraBuffer(cam* camera);
 void REUpdateGPUObjectBuffer(render_obj* ro);
 void REUpdateGPUObjectBuffer_Calculate(sc_obj* obj);
+
+/// @brief Send some common data to the shader
+/// @param s The recieving shader
+/// @param re The render environment from which to extract the data
+/// @note Updates "u_Time" and "u_Ratio"
+void shaderSendCommonData(shader s);
+
+/// @brief Render the screen quad
+/// @param re The render environment
+/// @param s The shader to use for rendering it
+void RERenderQuad(render_env* re, shader s);
 /// @brief Render every object in the scene
 void RERenderScene();
 /// @brief Render every object in the scene to the specified frame buffer

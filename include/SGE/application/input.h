@@ -128,11 +128,4 @@ vec2 inputGetMousePos_Screen();
 /// @note This array is part of the input system, it should only be used as read-only
 array(uint32)* inputGetTextInput();
 
-/// @brief Convert position in screen-space coordinates into world-space coordinates
-/// @param screenPos The position in screen-space
-/// @param distance The distance from the camera of the converted coordinate
-/// @return The converted position in world-space
-/// @note The convertion depends on the current rendering camera
-vec3 utilsScreenToWorld(vec2 screenPos, float distance);
-
 #endif

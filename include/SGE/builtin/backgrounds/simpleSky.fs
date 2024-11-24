@@ -16,12 +16,12 @@ void main()
     vec3 sky = (dot(rayDir, vec3(0, 1, 0)) * 0.5 + 0.5) * u_EnvAmbiant;
     vec3 color = sky;
 
-    if (u_EnvNbLights > 0u && u_SunIdx < 128u) {
+    if (u_EnvNbLights > 0u && u_SunIdx > 0u) {
         float SunRadius = 0.002;
-        float sun = max(0, -dot(rayDir, u_EnvLightDir[u_SunIdx]));
+        float sun = max(0, -dot(rayDir, u_EnvLightDir[u_SunIdx - 1u]));
         sun = sun > 1 - SunRadius ? 1.0 : 0.0;
 
-        color += sun * u_EnvLightCol[u_SunIdx];
+        color += sun * u_EnvLightCol[u_SunIdx - 1u];
     }
 
     o_FragColor = vec4(color, 1.0);

@@ -25,7 +25,7 @@ bool initializeSSAO() {
 }
 void terminateSSAOLogic() {
     freeFrameBuffer(ssaoTemp);
-    freeShader(SSAO);
+    destroyShader(SSAO);
 }
 
 void SSAOSetDistance(float distance) {
