@@ -12,7 +12,9 @@ The **SGE** currently depends on three libraries:
 - [**GLFW3**](https://www.glfw.org/) for creating the window, OpenGL context and for accessing the mouse and keyboard inputs.
 - [**GLAD**](https://glad.dav1d.de/#language=c&specification=gl&api=gl%3D4.6&api=gles1%3Dnone&api=gles2%3Dnone&api=glsc2%3Dnone&profile=compatibility&loader=on) with at least the specifications baked into this link for OpenGL bindings.
 
-In addition, after downloading the library, make sure to change the value `SGE_ROOT_PATH` line 10 in file `include/SGE/constants.h` to the path of the `SGE/..` folder on your machine, as the SGE needs to have access to it when loading built-in shaders (and other built-in files I might want to add later on). Also, if the **SL** is not in the same folder as the **SGE**, make sure to modify the `#include` in line 9 of `include/SGE/constants.h`. Those, saddly, are some of the quirks mentionned above.
+In addition, after downloading the library, make sure to change the value `SGE_ROOT_PATH` line 1 in file `include/SGE/constants.c` to the path of the `SGE/..` folder on your machine, as the SGE needs to have access to it when loading built-in shaders (and other built-in files I might want to add later on). Also, if the **SL** is not in the same folder as the **SGE**, make sure to modify the `#include` in line 9 of `include/SGE/constants.h`. Those, saddly, are some of the quirks mentionned above.
+
+To compile a program using the **SGE**, add compile arguments `-lSGE_b -lSGE -lSL C:\\msys64\\mingw64\\include\\glad\\glad.c C:\\msys64\\mingw64\\include\\SupSy\\SGE\\constants.c -lglfw3 -lopengl32 -lgdi32`.
 
 Finally, the general syntax ruleset used throughout the project is identical to that of the **SL** and is outlined in the README.md of the [**SupSyLibraries GitHub page**](https://github.com/SupSyDeMarciou/SupSyLibraries).
 
