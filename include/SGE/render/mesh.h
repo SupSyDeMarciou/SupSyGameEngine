@@ -67,9 +67,8 @@ mesh* meshClone(mesh* m);
 /// @param translation Translation to apply
 /// @param rotation Rotation to apply
 /// @param scale Scale to apply
-/// @param freeTransforms If the transforms are to be freed after the call
 /// @return The input mesh
-mesh* meshTransform(mesh* m, vec3* translation, quat* rotation, vec3* scale, bool freeTransforms);
+mesh* meshTransform(mesh* m, vec3 translation, quat rotation, vec3 scale);
 /// @brief Transform a mesh by a transform matrix
 /// @param m The mesh
 /// @param transformMat The transformation matrix to apply
@@ -86,11 +85,20 @@ mesh* meshMerge(mesh* a, mesh* b);
 // (i) Mesh a and b are not modified
 // (i) You can set an unwanted transform to NULL
 // (i) Set freeTransforms to TRUE to automaticaly free all transforms
-mesh* meshMergeTransform(mesh* a, vec3* positionA, quat* rotationA, vec3* scaleA, mesh* b, vec3* positionB, quat* rotationB, vec3* scaleB, bool freeTransforms);
+mesh* meshMergeTransform(mesh* a, vec3 positionA, quat rotationA, vec3 scaleA, mesh* b, vec3 positionB, quat rotationB, vec3 scaleB);
 
-// Render the mesh to the screen
+/// @brief Render a mesh to the currently bound frame buffer
+/// @param m The mesh to render
+/// @param materials The materials associated to this mesh
 void meshRender(mesh* m, material** materials);
+/// @brief Render a mesh to the currently bound frame buffer
+/// @param m The mesh to render
+/// @param s The shader to use for the whole mesh
 void meshRenderSimple(mesh* m, shader s);
+/// @brief Render a mesh to the currently bound frame buffer multiple times in one render call
+/// @param m The mesh to render
+/// @param s The shader to use for the whole mesh
+/// @param count The number of times to render the mesh
 void meshRenderInstanced(mesh* m, shader s, uint count);
 
 void meshAddVertexAttribute_Int(mesh* m, GLuint vbo, uint attributePointer, uint nbFields, GLuint type, size_t elemSize, size_t stride, uint attributeDivisor);

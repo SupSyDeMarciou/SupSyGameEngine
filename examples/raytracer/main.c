@@ -1,8 +1,8 @@
-#include <SupSy/SGE.h>
-#include <SupSy/SGE/builtin/extData/mouseCam.h>
-#include <SupSy/SGE/builtin/extData/freeCam.h>
-#include <SupSy/SGE/builtin/extData/daylightCycle.h>
-#include <SupSy/SGE/builtin/postEffects/bloom.h>
+#include <SGE.h>
+#include <SGE/builtin/extData/mouseCam.h>
+#include <SGE/builtin/extData/freeCam.h>
+#include <SGE/builtin/extData/daylightCycle.h>
+#include <SGE/builtin/postEffects/bloom.h>
 
 #include "rayTracer.h"
 

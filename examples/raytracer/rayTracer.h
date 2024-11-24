@@ -1,7 +1,7 @@
-#ifndef __SGE_BUILTIN_RAYTRACER
-#define __SGE_BUILTIN_RAYTRACER
+#ifndef __RAYTRACER_H__
+#define __RAYTRACER_H__
 
-#include <SupSy/SGE.h>
+#include <SGE.h>
 
 /// @brief Have the raytracer accumulate frames indefinitly
 #define RAYTRACER_NO_CAP -1

@@ -231,4 +231,21 @@ And then remove the rotation inside the main loop and after `scobjAttachLight_Di
     
     scobjAttachDaylightCycle(sun, vec3Unit(1, 0, 0), 120.0, 0.0);
 
-Though it takes more effort, we now have a more versatile *sun* **external data** which we can use in multiple projects by just sliding it into a `SGE/custom` folder with a nice `.h` header file and lovely comments.
+Though it takes more effort, we now have a more versatile *sun* **external data** which we can use in multiple projects by just sliding it into a `SGE/custom` folder with a nice `.h` header file and lovely comments. <br>
+To aid you in this process, the source code for the **built'in external data** is accessible inside of folder `!builtin/...`.
+
+---
+
+## Examples
+
+Currently there are two examples which use the **SGE**. They can be found in folder `examples/...`.
+
+The first one called "grass" was my first dabble with *instancing*, which I have updated to the current version of the **SGE**:
+<img title="Grass example" alt="Hilly grass field rendered in 3D." src="examples/images/grass.png">
+
+
+The second one called "raytracer" was my first attempt at a proper ray tracer with somewhat realistic lighting. This is when I introduced *shader buffer uniform* and *shader buffer storage* to the **SGE**:
+<img title="Raytracer example" alt="Bunch of colored spheres with different material properties atop a large one." src="examples/images/trace.png">
+
+
+More may be added later on.

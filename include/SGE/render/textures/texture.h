@@ -148,12 +148,27 @@ uvec2 tex2DGetSize(const texture2D* tex);
 /// @note This is the object identifier OpenGL returns when creating objects on the GPU
 GLuint tex2DGetGlID(const texture2D* tex);
 
-/// @brief Set a shader image texture
+/// @brief Set a shader texture
 /// @param s Shader ID
 /// @param fieldName Field name of the variable to set
 /// @param textureID The texture's position in shader (relative to first texture used)
 /// @param texture The desired texture
 void shaderSetTexture2D(shader s, const char* fieldName, uint textureID, const texture2D* texture);
+/// @brief Set a shader image texture
+/// @param s Shader ID
+/// @param fieldName Field name of the variable to set
+/// @param textureID The texture's position in shader (relative to first texture used)
+/// @param texture The desired texture
+/// @param writeReadMode Either "GL_READ_ONLY", "GL_WRITE_ONLY" or "GL_READ_WRITE"
+void shaderSetTexture2D_Image(shader s, const char* fieldName, uint textureID, const texture2D* texture, GLuint writeReadMode);
+/// @brief Set a shader layered image texture
+/// @param s Shader ID
+/// @param fieldName Field name of the variable to set
+/// @param textureID The texture's position in shader (relative to first texture used)
+/// @param texture The desired texture
+/// @param writeReadMode Either "GL_READ_ONLY", "GL_WRITE_ONLY" or "GL_READ_WRITE"
+/// @param layer Which layer to use
+void shaderSetTexture2D_ImageLayered(shader s, const char* fieldName, uint textureID, const texture2D* texture, GLuint writeReadMode, uint layer);
 
 /// @brief Copy a texture into another
 /// @param source The texture to copy from
