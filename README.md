@@ -20,7 +20,11 @@ Finally, the general syntax ruleset used throughout the project is identical to 
 
 ## Content Overview
 ### Application
-An instance of `application` must always be initialized using `void initializeApp(const char* appName)` to create the window and OpenGL context needed for rendering. This instance will then persist until the destruction of the program under the global variable `APP` accessible from anywhere in the code. This is the heart of the application from which the rest can sprout. It has its own *methods* under the prefix `app`.
+An instance of `application` must always be initialized using 
+```C 
+void initializeApp(const char* appName);
+```
+to create the window and OpenGL context needed for rendering. This instance will then persist until the destruction of the program under the global variable `APP` accessible from anywhere in the code. This is the heart of the application from which the rest can sprout. It has its own *methods* under the prefix `app`.
 
 When the application is created, it in turn creates a **scene** and a **render environment**, both of which are containers for the data necessary for either making the application dynamic or rendering it to the screen. They are part of the default *update and render loops* but are not mandatory when creating an application with the SGE.
 
@@ -49,30 +53,71 @@ Furthermore, a few useful libraries have been created under `!render/shaders/` s
 I might implement other macros such as `#request "..."` to have a specific uniform be automaticaly updated when rendering with this shader, or have an *SBU* or *SBS* attached to the shader without having to manually do it; or `#vertex "..."`, `#fragment "..."`, etc.. to be able to specify multiple shaders for a shader program in a single source file.
 
 ### Scene
-The **scene** holds the list of all **scene object**s. Its only useful *method* (currently) is `sceneUpdate` which calls the update function on all of the objects eligible for updates.
+The **scene** holds the list of all **scene object**s. Its only useful *method* (currently) is
+```C
+void sceneUpdate(void);
+```
+which calls the update function on all of the objects eligible for updates.
 
-A **scene object** of type `sc_obj` is a general purpose type which has a transform (position, rotation, scale, parent), may have an update function and **external data** blocks. It has its own *methods* under the prefix `scobj`. Its data blocks are the main interfaces between the *update* and *render* loops and can be created by a user of the library too to implement their own behaviours. These can be added, accessed and removes using the macros and functions refering to `ExtData`, either by the type directly or using `EXT_ID(my_type)` to retrieve its unique identifier. Some builtin **external data** include:
+A **scene object** of type `sc_obj` is a general purpose type which has a transform (position, rotation, scale, parent), may have an update function and **external data** blocks. It has its own *methods* under the prefix `scobj`. Its data blocks are the main interfaces between the *update* and *render* loops and can be created by a user of the library too to implement their own behaviours. These can be added, accessed and removes using the macros and functions refering to `ExtData`, either by the type directly or using 
+```C
+EXT_ID(my_data);
+```
+to retrieve its unique identifier. Some builtin **external data** include:
 - `cam`: the camera data needed for 3D rendring. It has its own *methods* under the prefix `cam`.
 - `render_obj`: holds the mesh and materials of an objects and registers it as needing to be rendered. It has its own *methods* under the prefix `RO`.
 - `light`: holds the data for light information. It has its own *methods* under the prefix `light`.
 - `text3D`: holds the data for a 3D text. It has its own *methods* under the prefix `text3D`.
 
 To create a new **external data**, one must:
-1. Define a structure and then wrap it in a type (typedef). I'll use `typedef struct MyData my_data`.
-2. Call macro `EXT_ID_DEF_C(my_data)` with the newly defined type next to your implementation and `EXT_ID_DEF(my_data)` in your header if there is one.
-3. Call `void extDataRegister(const volatile uint* id, func_free* f)` with the first parameter being `&EXT_ID(my_data)`. This will let the **SGE** know that `my_data` is a data block and so it will know how to retrieve it and dispose of it when destroying the *scene object* to which it is attached. Each **external data** must be registered as such, except for the ones mentionned above as they are registered by the **SGE** at the app initialization.
+1. Define a structure and then wrap it in a type (typedef) as well as a *free* function for this type. I'll use
+```C
+typedef struct MyData my_data;
+void freeMyData(my_data* toFree);
+```
+2. Call macros
+```C
+DEF_EXT_ID_C(my_type)   // In implementation
+DEF_EXT_ID(my_type)     // In header
+```
+
+3. Before ever using the data, call
+```C
+extDataRegister(&EXT_ID(my_data), &freeMyData);
+```
+This will let the **SGE** know that `my_data` is a data block and so it will know how to retrieve it and dispose of it when destroying the *scene object* to which it is attached. Each **external data** must be registered as such, except for the ones mentionned above as they are registered by the **SGE** at the app initialization.
 
 ### Input
-A few utility functions are grouped under the prefix `input` and deal with *keyboard* or *mouse* interactions. Each key and mouse button has a unique identifier and its state can be queried at the any point using `enum SGE_Key_State inputGetKeyState(enum SGE_Key key)` or simply checked for using `bool inputIsKey(enum SGE_Key key, enum SGE_Key_State state)`, `bool inputIsKeyPressed(enum SGE_Key key);`, `bool inputIsKeyDown(enum SGE_Key key);`, `bool inputIsKeyReleased(enum SGE_Key key);`, `bool inputIsKeyUp(enum SGE_Key key);` or `bool inputIsKeyRepeat(enum SGE_Key key);`. For more flexibility, **key states** can be binary-or-ed to check for multiple states at once and keys `SGE_KEY_ANY` and `SGE_MOUSE_ANY` used for broader reach.
+A few utility functions are grouped under the prefix `input` and deal with *keyboard* or *mouse* interactions. Each key and mouse button has a unique identifier and its state can be queried at the any point using 
+```C
+enum SGE_Key_State inputGetKeyState(enum SGE_Key key);      // Get state mask
+bool inputIsKey(enum SGE_Key key, enum SGE_Key_State state);// Check state
+bool inputIsKeyPressed(enum SGE_Key key);                   // Check state "pressed"
+bool inputIsKeyDown(enum SGE_Key key);                      // Check state "down"
+bool inputIsKeyReleased(enum SGE_Key key);                  // Check state "released"
+bool inputIsKeyUp(enum SGE_Key key);                        // Check state "up"
+bool inputIsKeyRepeat(enum SGE_Key key);                    // Check state "repeat"
+```
+For more flexibility, **key states** can be binary-or-ed to check for multiple states at once and keys `SGE_KEY_ANY` and `SGE_MOUSE_ANY` used for broader reach.
 
 ### Debug
 Currently a bit light in features. <br>
-Functions with prefix `debugDraw` allow for the rendering of primitive shapes with bezier curves for debugging purposes. The thickness and color of the splines can be changes using `void debugDraw_SetLineWidth(float width);` and `void debugDraw_SetColor(vec3 color);`. These parameters then apply for the following splines. <br>
+Functions with prefix `debugDraw` allow for the rendering of primitive shapes with bezier curves for debugging purposes. The thickness and color of the splines can be changes using 
+```C
+void debugDraw_SetLineWidth(float width);
+void debugDraw_SetColor(vec3 color);
+```
+These parameters then apply for the following splines.
+
 Functions with prefix `debugTimer` can be used for basic timing.
 
 ### Others
 Some of the types mentionned above can be directly imported into the project from an outside file by using a path to said file. <br>
-When using this feature, the user can either input a *full path* (startig from the root), a *relative path* (which is relative to a specific folder depending on the file type) or a *SGE path* (which is relative to the **SGE** folder on your machine). A *relative path* can be modified by using the `void [myType]SetDefaultPath(const char* newPath)` methods. A *SGE path* is specified by starting the string with `!` (for example: `!render/shaders/camera.glsl`). <br>
+When using this feature, the user can either input a *full path* (startig from the root), a *relative path* (which is relative to a specific folder depending on the file type) or a *SGE path* (which is relative to the **SGE** folder on your machine). A *relative path* can be modified by using the methodes of the form
+```C
+void [myType]SetDefaultPath(const char* newPath)` 
+```
+A *SGE path* is specified by starting the string with `!` (for example: `!render/shaders/camera.glsl`). <br>
 Types which may be imported include:
 - `shader`: You can load shader source code from a text file. The file extension thus does not matter, but I would recommend sticking with the naming convention already in place where
     - `.fs` -> Fragment shader source code
