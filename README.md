@@ -94,7 +94,7 @@ Types which may be imported include:
 
 ## Creating an executable using the SupSyGameEngine
 The simplest structure for an SGE executable is as follows:
-
+```C
     #include <SGE.h>
 
     int main() {
@@ -110,10 +110,10 @@ The simplest structure for an SGE executable is as follows:
         }
 
     }
-
+```
 However, it only shows a black screen, which is not very interesting. <br>
 We can incorporate the entire *update* and *render* loops as such:
-
+```C
     // Override the default resolution of the window buffer
     #define SGE_BASE_HEIGHT 2160
     #define SGE_BASE_WIDTH 3840
@@ -174,11 +174,11 @@ We can incorporate the entire *update* and *render* loops as such:
         destroyApp();
         return 0;
     }
-
+```
 Here we finaly have something to play around with, even if in a limited way. To keep the main loop less cluttered and add better functionality, we might want to abstract away the *sun* daylight cycle into an **external data** like so:
 
 `daylight_cycle.c`:
-
+```C
     #include "daylightCycle.h"
     DEF_EXT_ID_C(daylight_cycle)
 
@@ -208,9 +208,9 @@ Here we finaly have something to play around with, even if in a limited way. To 
     void registerDaylightCycle() {
         extDataRegister(&EXT_ID(daylight_cycle), &free);
     }
-
+```
 `daylight_cycle.h`:
-
+```C
     #ifndef __SGE_BUILTIN_DAYLIGHT_CYCLE_H__
     #define __SGE_BUILTIN_DAYLIGHT_CYCLE_H__
 
@@ -246,11 +246,11 @@ Here we finaly have something to play around with, even if in a limited way. To 
     void registerDaylightCycle();
 
     #endif
-
+```
 And then remove the rotation inside the main loop and after `scobjAttachLight_Directional` call:
-    
+```C
     scobjAttachDaylightCycle(sun, vec3Unit(1, 0, 0), 120.0, 0.0);
-
+```
 Though it takes more effort, we now have a more versatile *sun* **external data** which we can use in multiple projects by just sliding it into a `SGE/custom` folder with a nice `.h` header file and lovely comments. <br>
 To aid you in this process, the source code for the **built'in external data** is accessible inside of folder `!builtin/...`.
 
