@@ -3,22 +3,18 @@
 layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 layout (rgba16f, binding = 0) uniform image2D Image;
 
-// layout (std140, binding = 2) uniform Environment {
-    uniform vec4 u_ImageSize; // Width, Height, Width / Height, Height / Width
-    uniform uint u_TotalSamples;
-    #define MAX_BOUNCES 25
-    uniform uint u_MaxBounces;
-    uniform uint u_MaxTracesPerFrame;
-// };
+uniform vec4 u_ImageSize; // Width, Height, Width / Height, Height / Width
+uniform uint u_TotalSamples;
+#define MAX_BOUNCES 25
+uniform uint u_MaxBounces;
+uniform uint u_MaxTracesPerFrame;
+uniform uint u_PathIdx; // The current contiguously rendered frame
+uniform uint u_Seed;
 
 #include "!render/shaders/environment.glsl"
-#define SUN_IDX 0u
-
 #include "!render/shaders/camera.glsl"
 uniform float u_CamDepth;
 
-uniform uint u_PathIdx; // The current contiguously rendered frame
-uniform uint u_Seed;
 
 struct Material {
     vec3 albedo;
@@ -29,14 +25,9 @@ struct Material {
     float IOR;
 };
 struct Object {
-    vec4 position;      // base offset 16, aligned offset 16
-    vec4 scale;         // base offset 16, aligned offset 32
-    // mat4 transform;     // base offset 16, aligned offset 48 (1)
-                        // base offset 16, aligned offset 64 (2)
-                        // base offset 16, aligned offset 80 (3)
-                        // base offset 16, aligned offset 96 (4)
-    // uvec4 meshIdx;       // base offset 4, aligned offset 100
-    uvec4 matIdx;        // base offset 4, aligned offset 104
+    vec4 position;
+    vec4 scale;
+    uvec4 matIdx;
 };
 #define MAX_OBJ 32
 layout (std140) uniform Scene {
@@ -46,8 +37,8 @@ layout (std140) uniform Scene {
 uniform uint u_NbObj;
 
 struct Ray {
-    vec3 org; // Origin
-    vec3 dir; // Direction
+    vec3 org;
+    vec3 dir;
 };
 struct HitInfo {
     float dist;
@@ -69,21 +60,17 @@ HitInfo intersectSphere(Ray ray, Object o) {
     vec3 opos = o.position.xyz;
     float rad = o.scale.z;
 
-    // vec3 opos = vec3(0, 0, 0);
     vec3 rel = ray.org - opos;
 
-    // float a = dot(ray.dir, ray.dir); // = 1.0 because ray is normalized
     float hb = dot(ray.dir, rel);
     float c = dot(rel, rel) - rad * rad;
 
     float qD = hb*hb - c;
-    // float qD = hb*hb - a*c;
     if (qD < 0) return HitInfo(-1, vec3(0), vec3(0), 0, false);
 
     float hd = sqrt(qD);
     bool inside = hd + hb > 0.0; 
     float dist = inside ? hd - hb : -(hd + hb);
-    // float dist /= a;
     vec3 pos = ray.org + ray.dir * dist;
     return HitInfo(dist, pos, normalize(pos - opos), o.matIdx.x, inside);
 }
@@ -129,9 +116,8 @@ float bokehLength(vec2 org, int sides) {
     vec2 m = mix(vec2(1, 0), vec2(cos(ab), sin(ab)), ap / ab);
     return length(m);
 }
-
-// https://physics.stackexchange.com/questions/435512/snells-law-in-vector-form
 vec4 calcRefraction(vec3 i, vec3 n, float mu) {
+    // https://physics.stackexchange.com/questions/435512/snells-law-in-vector-form
     float ni = dot(n, i);
     float left = 1.0 - mu*mu * (1.0 - ni*ni);
     return left < 0 ? vec4(0, 0, 0, 0) : vec4(n * sqrt(left) + mu * (i - ni * n), 1);
@@ -159,8 +145,8 @@ vec3 trace(Ray ray, uint bounce, inout uint seed) {
             hitInfo = new;
         }
         if (!hit) {
-            float sunMask = pow(max(0, -dot(ray.dir, u_EnvLightDir[SUN_IDX])), 1000.0) * 100.0;
-            vec3 sunLight = u_EnvLightCol[SUN_IDX] * sunMask;
+            float sunMask = pow(max(0, -dot(ray.dir, u_EnvLightDir[0])), 1000.0) * 100.0;
+            vec3 sunLight = u_EnvLightCol[0] * sunMask;
             vec3 skyLight = u_EnvAmbiant * (ray.dir.y * 0.5 + 0.5);
             light += (sunLight + skyLight) * absorb * 1.0;
             break;
@@ -207,6 +193,9 @@ vec3 trace(Ray ray, uint bounce, inout uint seed) {
     return light;
 }
 
+uniform float u_FocalDistance = 15.0;
+uniform float u_FocalDispersion = 0.25;
+
 void main() {
     ivec2 UV = ivec2(gl_GlobalInvocationID.xy);
 
@@ -216,10 +205,7 @@ void main() {
     vec2 uv = 2.0 * vec2(UV) / u_ImageSize.xy - 1.0;
     mat3 camRot = transpose(u_CamInvRotMat);
 
-    float focusDisk = 0.25;
-    float focusDistance = 15;
-
-    float baseOffsetStrength = 0.001 * 0; 
+    float baseOffsetStrength = 0.001; 
     vec3 baseDir = normalize(vec3(uv * vec2(u_ImageSize.z, 1.0), u_CamDepth));
     vec3 baseOrg = camRot * baseDir * 0.03 + u_CamPosition;
 
@@ -232,9 +218,9 @@ void main() {
         vec3 inter = vec3(0);
         for (uint j = 0; j < 16; j++) {
             vec2 org = randVec2Disk(seed); 
-            vec3 offset = vec3(org * (focusDisk * bokehLength(org, 5) + baseOffsetStrength), 0.0);
+            vec3 offset = vec3(org * (u_FocalDispersion * bokehLength(org, 5) + baseOffsetStrength), 0.0);
             ray.org = baseOrg + camRot * offset;
-            ray.dir = camRot * normalize(baseDir * focusDistance - offset);
+            ray.dir = camRot * normalize(baseDir * u_FocalDistance - offset);
             inter += trace(ray, u_MaxBounces, seed);
         }
         result += inter / 16.0;

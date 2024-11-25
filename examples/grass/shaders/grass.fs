@@ -30,7 +30,7 @@ void main()
 
     float fact = fs_in.uv.y * fs_in.uv.y;
     vec3 albedo = mix(vec3(0), mix(mColor.rgb, mColor.rgb * vec3(noise.gb * 2.0 - 1, 0), 0.2), 0.7 * fact + 0.3);
-    albedo += vec3(0.5, 0.25, 0) * (fs_in.randPer + 1.0) * 0.1;
+    albedo += vec3(0.5, 0.25, 0) * (fs_in.randPer + 0.5) * 0.1;
     
     float diffuse = max(0, dot(normal, u_EnvLightDir[0]) * 0.85 + 0.15); // Simulate a bit of translucency
     float specular = pow(max(0, dot(normal, halfwayDir)), 10);

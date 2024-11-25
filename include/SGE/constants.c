@@ -1,1 +1,1 @@
-char* SGE_ROOT_PATH = "C:/msys64/mingw64/include/SupSy/SGE";
+char* SGE_ROOT_PATH = "C:/.../include/SGE"; // Change to the path to the SGE on your machine

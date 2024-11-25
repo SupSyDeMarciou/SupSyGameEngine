@@ -1,5 +1,4 @@
 #version 460 core
-#include "!render/shaders/maths.glsl"
 
 layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 layout (rgba16f, binding = 0) uniform image2D Texture;
@@ -10,6 +9,7 @@ uniform float u_Detail;
 uniform float u_Roughness;
 uniform float u_Distortion;
 
+#include "!render/shaders/maths.glsl"
 
 float fractalNoise2D(vec2 p, float scale, float detail, float roughness, float distortion) {
 

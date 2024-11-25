@@ -87,6 +87,24 @@ tex_form tex2DGenOtherFormat(tex_other_formats otherFormat);
 /// @brief 2D Texture structure
 typedef struct Texture2D texture2D;
 
+/// @brief Create a 2D texture ON STACK
+/// @param size The size of the texture
+/// @param format The format of the texture (Use "tex2DGenFormat" or "tex2DGenOtherFormat" as input)
+/// @return The newly created 2D texture
+texture2D createTexture2D(uvec2 size, tex_form format);
+/// @brief Convert a 2D image into a 2D texture ON STACK
+/// @param image The source image
+/// @return The newly created 2D texture
+texture2D createTexture2D_fromImage2D(image2D image);
+/// @brief Load a 2D image into a 2D texture ON STACK
+/// @param path The path to the image
+/// @param extension The extension of the image
+/// @return The newly created 2D texture
+texture2D createTexture2D_load(const char* path, img_ext extension);
+/// @brief Destroy a 2D texture
+/// @param toDestroy The texture to destroy
+void destroyTexture2D(texture2D toDestroy);
+
 /// @brief Create new 2D texture
 /// @param size The size of the texture
 /// @param format The format of the texture (Use "tex2DGenFormat" or "tex2DGenOtherFormat" as input)

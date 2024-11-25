@@ -14,7 +14,7 @@ The **SGE** currently depends on three libraries:
 
 In addition, after downloading the library, make sure to change the value `SGE_ROOT_PATH` line 1 in file `include/SGE/constants.c` to the path of the `SGE/..` folder on your machine, as the SGE needs to have access to it when loading built-in shaders (and other built-in files I might want to add later on). Also, if the **SL** is not in the same folder as the **SGE**, make sure to modify the `#include` in line 9 of `include/SGE/constants.h`. Those, saddly, are some of the quirks mentionned above.
 
-To compile a program using the **SGE**, add compile arguments `-lSGE_b -lSGE -lSL C:\\msys64\\mingw64\\include\\glad\\glad.c C:\\msys64\\mingw64\\include\\SupSy\\SGE\\constants.c -lglfw3 -lopengl32 -lgdi32`.
+To compile a program using the **SGE**, use compile arguments `-lSGE -lSL C:\\...\\glad\\glad.c C:\\...\\SGE\\constants.c -lglfw3 -lopengl32 -lgdi32` in this order to ensure correct linking.
 
 Finally, the general syntax ruleset used throughout the project is identical to that of the **SL** and is outlined in the README.md of the [**SupSyLibraries GitHub page**](https://github.com/SupSyDeMarciou/SupSyLibraries).
 
@@ -55,9 +55,10 @@ A **scene object** of type `sc_obj` is a general purpose type which has a transf
 - `cam`: the camera data needed for 3D rendring. It has its own *methods* under the prefix `cam`.
 - `render_obj`: holds the mesh and materials of an objects and registers it as needing to be rendered. It has its own *methods* under the prefix `RO`.
 - `light`: holds the data for light information. It has its own *methods* under the prefix `light`.
+- `text3D`: holds the data for a 3D text. It has its own *methods* under the prefix `text3D`.
 
 To create a new **external data**, one must:
-1. Define a structure and then wrap it in a type (typedef). I'll use `tyepdef struct MyData my_data`.
+1. Define a structure and then wrap it in a type (typedef). I'll use `typedef struct MyData my_data`.
 2. Call macro `EXT_ID_DEF_C(my_data)` with the newly defined type next to your implementation and `EXT_ID_DEF(my_data)` in your header if there is one.
 3. Call `void extDataRegister(const volatile uint* id, func_free* f)` with the first parameter being `&EXT_ID(my_data)`. This will let the **SGE** know that `my_data` is a data block and so it will know how to retrieve it and dispose of it when destroying the *scene object* to which it is attached. Each **external data** must be registered as such, except for the ones mentionned above as they are registered by the **SGE** at the app initialization.
 
@@ -79,6 +80,15 @@ Types which may be imported include:
     - `.gs` -> Geometry shader source code
     - `.cs` -> Compute shader source code
     - `.glsl` -> Library source code
+
+    The default path is `shaders`.
+- `mesh`: You can load meshes from a file. The only currently supported extension is `.obj`, and not fully yet.
+
+    The default path is `meshes`.
+- `font`: You can import fonts from `.ttf` files to use when rendering text.
+
+    The default path is `fonts`.
+- `image2D`: Technicaly a **SL** feature, you can import and export images.
 
 ----
 
@@ -105,9 +115,9 @@ However, it only shows a black screen, which is not very interesting. <br>
 We can incorporate the entire *update* and *render* loops as such:
 
     // Override the default resolution of the window buffer
-    #define SGE_BASE_WIDTH 1920 * 2
-    #define SGE_BASE_HEIGHT 1080 * 2
-    
+    #define SGE_BASE_HEIGHT 2160
+    #define SGE_BASE_WIDTH 3840
+
     // Notice that the width and height have been defined BEFORE including "SGE.h"
     #include <SGE.h>
     #include <SGE/builtin/extData/mouseCam.h> // Include a camera controled by keyboard and mouse
@@ -121,6 +131,8 @@ We can incorporate the entire *update* and *render* loops as such:
         sc_obj* cameraObj = mouseCam_addDefault(Vec3(0, 1, 0), quat_identity, 60*DEG_TO_RAD);
         cam* cameraData = scobjGetExtData(cameraObj, cam);
         RESetRenderCamera(cameraData);
+        // Make mouse cursor hidden for infinite panning
+        glfwSetInputMode(APP->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         // Create a basic floor so there is something to look at
         shader surfaceShader = createSurfaceShader("!builtin/shaders/pbr.fs");
@@ -132,7 +144,8 @@ We can incorporate the entire *update* and *render* loops as such:
         // Make a sun to have a light in the scene
         quat sunRot = Quat_Euler(70.0, 60.0, 0.0);
         sc_obj* sun = newSceneObject(vec3_zero, sunRot, vec3_one, NULL, false, NULL);
-        scobjAttachLight_Directional(sun, scale3(Vec3(1.0, 1.0, 0.95), 15.0));
+        light* sunLight = scobjAttachLight_Directional(sun, scale3(Vec3(1.0, 1.0, 0.95), 15.0));
+        simpleSkySetSun(REGetBackground(), sunLight);
 
         // Get reference to the output of the SGE Rendering Pipeline
         frame_buffer* REoutput = REGetOutputFB(APP->renderEnvironment);
@@ -143,9 +156,11 @@ We can incorporate the entire *update* and *render* loops as such:
 
         while (!appShouldClose()) { // Wether the window should shut down
             startFrameUpdate(); // Setup the inputs, timers, queries, etc...
+            // As the mouse is hidden, we need to be able to close the window without pressing the "X"
+            if (inputIsKeyPressed(SGE_KEY_ESCAPE)) appSetShouldClose(true);
 
             // Rotate the sun around the X axis each frame to have a daylight cycle
-            quat rot = Quat_Euler(0.0, PI / 60.0 * TIME.dt, 0.0);
+            quat rot = Quat_Euler(0.0, PI / 25.0 * TIME.timeAtFrameStart, 0.0);
             mulQ_(&rot, &sunRot, &sun->transform.rotation);
 
             sceneUpdate(APP->scene);                // Update all scene objects which are active, non-static and have an update function. In this case, only the camera.
@@ -155,6 +170,9 @@ We can incorporate the entire *update* and *render* loops as such:
 
             endFrameUpdate(); // Calculate TIME.dt, swap buffers, etc...
         }
+
+        destroyApp();
+        return 0;
     }
 
 Here we finaly have something to play around with, even if in a limited way. To keep the main loop less cluttered and add better functionality, we might want to abstract away the *sun* daylight cycle into an **external data** like so:
@@ -245,9 +263,11 @@ Currently there are two examples which use the **SGE**. They can be found in fol
 The first one called "grass" was my first dabble with *instancing*, which I have updated to the current version of the **SGE**:
 <img title="Grass example" alt="Hilly grass field rendered in 3D." src="examples/images/grass.png">
 
-
 The second one called "raytracer" was my first attempt at a proper ray tracer with somewhat realistic lighting. This is when I introduced *shader buffer uniform* and *shader buffer storage* to the **SGE**:
 <img title="Raytracer example" alt="Bunch of colored spheres with different material properties atop a large one." src="examples/images/trace.png">
+
+The third one called "fractal", and it was my first true dabble with *compute shader*s. It works as a fractal visualizer, so that you may input a fractal-generating shader as an agrument when starting the program.
+<img title="Fractal example" alt="Zoom on the mandelbrot fractal." src="examples/images/fractal.png">
 
 
 More may be added later on.

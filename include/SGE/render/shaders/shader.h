@@ -19,7 +19,7 @@ shader createShader(const char* vertexShaderFilePath, const char* fragmentShader
 
 /// @brief Free a shader
 /// @param toFree The shader to free
-void freeShader(shader toFree);
+void destroyShader(shader toFree);
 
 /// @brief Create a shader for surface material
 /// @param fragmentShaderFilePath Path to fragment shader

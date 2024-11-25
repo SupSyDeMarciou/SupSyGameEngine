@@ -1,10 +1,10 @@
 #include "rayTracer.h"
 
-static uint pathIdx = 1;
+static uint pathIdx = 0;
 static uvec3 groups;
 static comp_shader raytrace = -1;
 static texture2D* RTresult;
-static shader_buff_uni* sceneBuffer;
+static shader_buff_uni sceneBuffer;
 static sbu_bp* sceneBufferBP;
 
 // Raytracing scene object
@@ -35,9 +35,9 @@ static uint MATERIALS_COUNT = 0;
 
 bool initializeRayTracer(texture2D* result, uint maxBounces, uint maxTracesPerFrame, int totalSamples) {
     if (raytrace != -1) return false;
-    sceneBuffer = newShaderBufferUniform();
-    sceneBufferBP = SBUAttachBindingPoint(sceneBuffer, "Scene", 3, sizeof(SCENE));
-    SBUFinalize(sceneBuffer);
+    sceneBuffer = createShaderBufferUniform();
+    sceneBufferBP = SBUAttachBindingPoint(&sceneBuffer, "Scene", 3, sizeof(SCENE));
+    SBUFinalize(&sceneBuffer);
 
     raytrace = createComputeShader("trace.cs");
     shaderAttachUniformBufferBP(raytrace, SGE_SBU_BP_Camera);
@@ -52,7 +52,7 @@ bool initializeRayTracer(texture2D* result, uint maxBounces, uint maxTracesPerFr
     shaderSetUint(raytrace, "u_MaxBounces", maxBounces);
     shaderSetUint(raytrace, "u_MaxTracesPerFrame", maxTracesPerFrame);
     shaderSetUint(raytrace, "u_TotalSamples", totalSamples > 0 ? totalSamples : -1);
-    SL_randSeed(0);
+    SL_randSeed(8);
     return true;
 }
 
@@ -61,6 +61,12 @@ void raytracerSetNbBounces(uint n) {
 }
 void raytracerSetNbTraces(uint n) {
     shaderSetUint(raytrace, "u_MaxTracesPerFrame", n);
+}
+void raytracerSetFocalDistance(float d) {
+    shaderSetFloat(raytrace, "u_FocalDistance", d);
+}
+void raytracerSetFocalDispersion(float d) {
+    shaderSetFloat(raytrace, "u_FocalDispersion", d);
 }
 uint raytracerGetCompletion() {
     return pathIdx;
@@ -87,14 +93,14 @@ material* materialFromRTMat(shader surfaceShader, uint rtMat) {
 }
 
 void raytracerSendScene() {
-    SBUSetData(sceneBuffer, &SCENE);
+    SBUSetData(&sceneBuffer, &SCENE);
     shaderSetUint(raytrace, "u_NbObj", OBJECT_COUNT);
 }
 
 void raytracerRender() {
     cam* camData = REGetRenderCamera(APP->renderEnvironment);
     shaderSetFloat(raytrace, "u_CamDepth", 1.0 / tan(camGetFOV(camData) * 0.5));
-    shaderSetUint(raytrace, "u_PathIdx", pathIdx++);
+    shaderSetUint(raytrace, "u_PathIdx", ++pathIdx);
     shaderSetUint(raytrace, "u_Seed", SL_randU32());
 
     shaderUse(raytrace);
@@ -102,5 +108,5 @@ void raytracerRender() {
     compShaderDispatch(raytrace, XPD_VEC3(groups));
 }
 void raytracerRestart() {
-    pathIdx = 1;
+    pathIdx = 0;
 }

@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "*.h": "c",
+        "*.hpp": "cpp",
+        "*.fs": "glsl",
+        "*.vs": "glsl",
+        "*.gs": "glsl",
+        "*.cs": "glsl",
+        "type_traits": "c",
+        "cmath": "c"
+    }
+}

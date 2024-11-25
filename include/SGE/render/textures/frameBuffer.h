@@ -18,20 +18,28 @@ typedef enum DepthStencilFormat {
 
 typedef struct FrameBuffer frame_buffer;
 
-/// @brief Create a frame buffer
+/// @brief Create a frame buffer ON STACK
+/// @param size The size
+/// @return The newly created frame buffer
+frame_buffer createFrameBuffer(uvec2 size);
+/// @brief Destroy a frame buffer
+/// @param toDestroy The frame buffer to destroy
+void destroyFrameBuffer(frame_buffer toDestroy);
+/// @brief Create a new frame buffer
 /// @param size The size
 /// @return The newly created frame buffer
 frame_buffer* newFrameBuffer(uvec2 size);
 /// @brief Free a frame buffer
 /// @param toFree The frame buffer to free
 void freeFrameBuffer(frame_buffer* toFree);
+
 /// @brief Check if a frame buffer is complete (according to OpenGL specification)
 /// @param buffer The buffer to check
 /// @return Wether the buffer is complete
 bool isFBComplete(frame_buffer* buffer);
 /// @brief Crash application if frame buffer is not complete
 /// @param buffer The buffer to check
-void FBFailIfNotComplete(frame_buffer* buffer);
+#define FBFailIfNotComplete(buffer) do { if (!isFBComplete(buffer)) failWithError("Frame buffer not complete"); } while (0)
 /// @brief Get the size of a frame buffer
 /// @param buffer The frame buffer
 /// @return The size of the frame buffer

@@ -7,7 +7,7 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "../SL.h" // Change to the path to the SL on your machine
-extern char* SGE_ROOT_PATH; // Change to path to the SGE on your machine
+extern char* SGE_ROOT_PATH;
 
 #ifndef SGE_BASE_WIDTH
 #   define SGE_BASE_WIDTH 1920

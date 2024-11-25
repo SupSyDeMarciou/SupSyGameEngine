@@ -18,9 +18,21 @@ struct ShaderBufferUniform {
 
     bool finalized;
 };
-extern GLint SGE_SHADER_BUFFER_UNIFORM_OFFSET_ALIGNMENT;
+/// @brief Get the shader buffer uniform offset alignment on this machine
+/// @return The shader buffer uniform offset alignment
+uint SBUGetOffsetAlignment();
+/// @brief Calculate the SBU alignment
+/// @param i The position
+/// @return The calculated alignment
 uint SBUCalcAlignment(uint i);
 
+/// @brief Create an empty shader buffer uniform object ON STACK
+/// @return The newly created shader buffer uniform
+/// @note This buffer must be finalized with "SBUFinalize" to sent to the GPU and thus be used
+shader_buff_uni createShaderBufferUniform();
+/// @brief Destroy a shader buffer uniform
+/// @param toDestroy The shader buffer uniform to destroy
+void destroyShaderBufferUniform(shader_buff_uni toDestroy);
 /// @brief Create a new empty shader buffer uniform object
 /// @return The newly created shader buffer uniform
 /// @note This buffer must be finalized with "SBUFinalize" to sent to the GPU and thus be used
@@ -80,9 +92,21 @@ struct ShaderBufferStorage {
 
     bool finalized;
 };
-extern GLint SGE_SHADER_BUFFER_STORAGE_OFFSET_ALIGNMENT;
+/// @brief Get the shader buffer storage offset alignment on this machine
+/// @return The shader buffer storage offset alignment
+uint SBSGetOffsetAlignment();
+/// @brief Calculate the SBS alignment
+/// @param i The position
+/// @return The calculated alignment
 uint SBSCalcAlignment(uint i);
 
+/// @brief Create an empty shader buffer storage object ON STACK
+/// @return The newly created shader buffer storage
+/// @note This buffer must be finalized with "SBSFinalize" to sent to the GPU and thus be used
+shader_buff_sto createShaderBufferStorage();
+/// @brief Destroy a shader buffer storage
+/// @param toDestroy The shader buffer storage to destroyed
+void destroyShaderBufferStorage(shader_buff_sto toDestroy);
 /// @brief Create a new empty shader buffer storage object
 /// @return The newly created shader buffer storage
 /// @note This buffer must be finalized with "SBSFinalize" to sent to the GPU and thus be used

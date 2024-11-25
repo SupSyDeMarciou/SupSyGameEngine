@@ -1,7 +1,7 @@
 #ifndef __RAYTRACER_H__
 #define __RAYTRACER_H__
 
-#include <SGE.h>
+#include <SupSy/SGE.h>
 
 /// @brief Have the raytracer accumulate frames indefinitly
 #define RAYTRACER_NO_CAP -1
@@ -50,6 +50,12 @@ void raytracerSetNbBounces(uint n);
 /// @brief Set the number of traces
 /// @param n The new number of traces
 void raytracerSetNbTraces(uint n);
+/// @brief Set the focus distance
+/// @param d The distance
+void raytracerSetFocalDistance(float d);
+/// @brief Set the focus dispersion
+/// @param d The dispersion (radius of dispersion disk)
+void raytracerSetFocalDispersion(float d);
 /// @brief Get the accumulation count
 /// @return The number of accumulated frames
 uint raytracerGetCompletion();

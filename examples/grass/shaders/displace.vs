@@ -13,7 +13,7 @@ uniform sampler2D u_DisplacementMap;
 uniform float u_Strength;
 
 vec3 surfaceNormal(vec2 uv) {
-    vec2 e = vec2(0.002, 0);
+    vec2 e = vec2(0.001, 0);
     
     float z1 = (texture2D(u_DisplacementMap, uv + e.xy).x - texture2D(u_DisplacementMap, uv - e.xy).x) * u_Strength;
     float z2 = (texture2D(u_DisplacementMap, uv + e.yx).x - texture2D(u_DisplacementMap, uv - e.yx).x) * u_Strength;

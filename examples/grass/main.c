@@ -1,10 +1,10 @@
-#define SGE_BASE_WIDTH (1920 * 4)
-#define SGE_BASE_HEIGHT (1080 * 4)
+#define SGE_BASE_HEIGHT 2160
+#define SGE_BASE_WIDTH 3840
 
-#include <SGE.h>
-#include <SGE/builtin/extData/freeCam.h>
-#include <SGE/builtin/postEffects/bloom.h>
-#include <SGE/builtin/postEffects/ssao.h>
+#include <SupSy/SGE.h>
+#include <SupSy/SGE/builtin/extData/freeCam.h>
+#include <SupSy/SGE/builtin/postEffects/bloom.h>
+#include <SupSy/SGE/builtin/postEffects/ssao.h>
 
 int main() {
 
@@ -90,14 +90,14 @@ int main() {
     scobjAttachRenderObject_SingleMat(cube, meshUnitCube(), cubeMat, true, RENDER_CULL_FRONT, true, NULL, NULL);
 
     // Add camera
-    sc_obj* camera = freeCam_addDefault(vec3_zero, quat_identity, 60*DEG_TO_RAD);
+    sc_obj* camera = freeCam_addDefault(Vec3(-2.25, 1.6, 3.4), Quat_Euler(3.7, 0, 0), 60 * DEG_TO_RAD);
     camSetFCP(scobjGetExtData(camera, cam), 1000);
     RESetRenderCamera(scobjGetExtData(camera, cam));
 
     // Add sun
     sc_obj* sun = newSceneObject(vec3_zero, Quat_Euler(250*DEG_TO_RAD, -30*DEG_TO_RAD, 0), vec3One(1), NULL, false, NULL);
     scobjAttachLight_Directional(sun, scale3(Vec3(1.0, 1.0, 0.95), 15.0));
-    REbackground_skySetSun(scobjGetExtData(sun, light));
+    simpleSkySetSun(REGetBackground(), scobjGetExtData(sun, light));
 
     // Create secondary buffer for blit operations
     frame_buffer* fb = newFrameBuffer(Uvec2(SGE_BASE_WIDTH, SGE_BASE_HEIGHT));
