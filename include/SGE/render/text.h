@@ -3,7 +3,7 @@
 
 #include "../constants.h"
 
-#include "render.h"
+#include "rend_env.h"
 #include "shaders/shaders.h"
 #include "mesh.h"
 #include "../scene/sc_object.h"
@@ -123,7 +123,7 @@ typedef struct Text3D {
 } text3D;
 DEF_EXT_ID(text3D);
 
+void text3DRender(sc_obj* source);
 text3D* scobjAttachText3D(sc_obj* source, text* t, shader s);
-void text3DRender(text3D* t);
 
 #endif

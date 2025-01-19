@@ -18,9 +18,6 @@ struct ShaderBufferUniform {
 
     bool finalized;
 };
-/// @brief Get the shader buffer uniform offset alignment on this machine
-/// @return The shader buffer uniform offset alignment
-uint SBUGetOffsetAlignment();
 /// @brief Calculate the SBU alignment
 /// @param i The position
 /// @return The calculated alignment
@@ -92,9 +89,6 @@ struct ShaderBufferStorage {
 
     bool finalized;
 };
-/// @brief Get the shader buffer storage offset alignment on this machine
-/// @return The shader buffer storage offset alignment
-uint SBSGetOffsetAlignment();
 /// @brief Calculate the SBS alignment
 /// @param i The position
 /// @return The calculated alignment

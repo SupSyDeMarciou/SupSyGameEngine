@@ -1,6 +1,6 @@
 # SUPSY GAME ENGINE
 ## Introduction
-The **SupSyGameEngine (SGE)** is a custom game engine. It aims at making the process of startig a fresh new project fast and painless. This project is mainly a learning experiment on the methods used for rendering and scene management, but I have already used it in other projects for prototyping with great success (see `examples` folder).
+The **SupSyGameEngine (SGE)** is a custom game engine. It aims at making the process of starting a fresh new project fast and painless. This is mainly a learning experiment on the methods used for rendering and scene management, but I have already used it in other projects for prototyping with great success (see `examples` folder).
 
 ## /!\ IMPORTANT /!\
 The SGE is a work in progress, it therefore has a few quirks and lacks polish. Some functions don't yet have a full description, implementation and some importing formats are currently either only partially supported or not supported at all (even when their names appear in the code). In addition, there still isn't a proper system for disposing of the memory allocated during the lifetime of the program when it terminates (meaning it is the user's responsability to deallocate all of the SGE objects he created, which is not ideal).
@@ -12,9 +12,9 @@ The **SGE** currently depends on three libraries:
 - [**GLFW3**](https://www.glfw.org/) for creating the window, OpenGL context and for accessing the mouse and keyboard inputs.
 - [**GLAD**](https://glad.dav1d.de/#language=c&specification=gl&api=gl%3D4.6&api=gles1%3Dnone&api=gles2%3Dnone&api=glsc2%3Dnone&profile=compatibility&loader=on) with at least the specifications baked into this link for OpenGL bindings.
 
-In addition, after downloading the library, make sure to change the value `SGE_ROOT_PATH` line 1 in file `include/SGE/constants.c` to the path of the `SGE/..` folder on your machine, as the SGE needs to have access to it when loading built-in shaders (and other built-in files I might want to add later on). Also, if the **SL** is not in the same folder as the **SGE**, make sure to modify the `#include` in line 9 of `include/SGE/constants.h`. Those, saddly, are some of the quirks mentionned above.
+In addition, after downloading the library, make sure to change the value `SGE_ROOT_PATH` line 6 in file `include/SGE.h` to the path of the `SGE/..` folder on your machine, as the SGE needs to have access to it when loading built-in shaders (and other built-in files I might want to add later on). Also, if the **SL** is not in the same folder as the **SGE**, make sure to modify the `#include` in line 14 of `include/SGE/constants.h`. Those, saddly, are some of the quirks mentionned above.
 
-To compile a program using the **SGE**, use compile arguments `-lSGE -lSL C:\\...\\glad\\glad.c C:\\...\\SGE\\constants.c -lglfw3 -lopengl32 -lgdi32` in this order to ensure correct linking.
+To compile a program using the **SGE**, use compile arguments `-lSGE -lSL -lglfw3 -lopengl32 -lgdi32` in this order to ensure correct linking.
 
 Finally, the general syntax ruleset used throughout the project is identical to that of the **SL** and is outlined in the README.md of the [**SupSyLibraries GitHub page**](https://github.com/SupSyDeMarciou/SupSyLibraries).
 
@@ -50,7 +50,8 @@ As long as the OpenGL context has been created and is maintained, these structur
 - `light`: Represents a light in 3D space that is either of type `LIGHT_TYPE_DIRECTIONAL`, `LIGHT_TYPE_POINT`, `LIGHT_TYPE_SPOT` or `LIGHT_TYPE_AREA`. These lights can then be accessed in shaders to shade objects accordingly. It has its own *methods* under the prefix `light`.
 
 Furthermore, a few useful libraries have been created under `!render/shaders/` such as `object.glsl`, `camera.glsl` and `environment.glsl` which have corresponding `SGE_SBU_BP_Object`, `SGE_SBU_BP_Camera` and `SGE_SBU_BP_Environment` *shader uniform binding point*s. They can be used by calling the `#include "..."` macro, which has been defined when using the **SGE**. As of now, it works by pasting the code contained inside of the file directly in the place of the macro invocation. <br>
-I might implement other macros such as `#request "..."` to have a specific uniform be automaticaly updated when rendering with this shader, or have an *SBU* or *SBS* attached to the shader without having to manually do it; or `#vertex "..."`, `#fragment "..."`, etc.. to be able to specify multiple shaders for a shader program in a single source file.
+I might implement other macros such as `#request "..."` to have a specific uniform be automaticaly updated when rendering with this shader, or have an *SBU* or *SBS* attached to the shader without having to manually do it; or `#vertex "..."`, `#fragment "..."`, etc.. to be able to specify multiple shaders for a shader program in a single source file. <br>
+Might also consider adding tools to precompile shader code directly, as well as store other data-types like *mesh* in an expanded format which makes it faster to load in.
 
 ### Scene
 The **scene** holds the list of all **scene object**s. Its only useful *method* (currently) is
@@ -140,6 +141,7 @@ Types which may be imported include:
 ## Creating an executable using the SupSyGameEngine
 The simplest structure for an SGE executable is as follows:
 ```C
+    #define SGE_MAIN // Let the SGE know this is where the program starts
     #include <SGE.h>
 
     int main() {
@@ -159,6 +161,8 @@ The simplest structure for an SGE executable is as follows:
 However, it only shows a black screen, which is not very interesting. <br>
 We can incorporate the entire *update* and *render* loops as such:
 ```C
+    #define SGE_MAIN // Let the SGE know this is where the program starts
+
     // Override the default resolution of the window buffer
     #define SGE_BASE_HEIGHT 2160
     #define SGE_BASE_WIDTH 3840
@@ -303,7 +307,7 @@ To aid you in this process, the source code for the **built'in external data** i
 
 ## Examples
 
-Currently there are two examples which use the **SGE**. They can be found in folder `examples/...`.
+I have provided several examples which use the **SGE**. These can be found in folder `examples/...`.
 
 The first one called "grass" was my first dabble with *instancing*, which I have updated to the current version of the **SGE**:
 <img title="Grass example" alt="Hilly grass field rendered in 3D." src="examples/images/grass.png">

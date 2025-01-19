@@ -25,9 +25,7 @@ free_cam* scobjAttachFreeCam(sc_obj* source, float linVel, float rotVel, float l
     new->rotPos.x = temp.x;
     new->rotPos.y = temp.y;
 
-    new->rotPos = vec2_zero;
-
-    scobjAddExtData(source, free_cam, new);
+    scobjAttachExtData(source, free_cam, new);
 
     return (free_cam*)new;
 }
@@ -84,5 +82,5 @@ sc_obj* freeCam_addDefault(vec3 pos, quat rot, float FOV) {
 }
 
 void registerFreeCam() {
-    extDataRegister(&EXT_ID(free_cam), &free);
+    registerExtData(free_cam, &free);
 }

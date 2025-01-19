@@ -112,8 +112,8 @@ sc_obj* newTrail(sc_obj* focusObject, float thickness, float lifetime, vec3 star
     }
     mesh* trailMesh = newMesh(2 * NB_PARTS + 2, vertices, 2 * NB_PARTS, triangles, 1, NULL);
     
-    scobjAttachRenderObject_SingleMat(new->source, trailMesh, newMaterial(trailShader, trailMat_sendData, trailMat, free), true, RENDER_CULL_NONE, false, trail_onBeforeRender, NULL);
-    scobjAddExtData(new->source, trail, new);
+    scobjAttachRenderObject_SingleMat(new->source, trailMesh, newMaterial(trailShader, trailMat_sendData, trailMat, free), true, RENDER_CULL_NONE, false, false, trail_onBeforeRender, NULL);
+    scobjAttachExtData(new->source, trail, new);
 
     return new->source;
 }
@@ -123,5 +123,5 @@ void trailSimulate(bool b) {
 }
 
 void registerTrail() {
-    extDataRegister(&EXT_ID(trail), &free);
+    registerExtData(trail, &free);
 }

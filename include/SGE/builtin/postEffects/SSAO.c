@@ -11,7 +11,7 @@ bool initializeSSAO() {
     
     ssaoTemp = newFrameBuffer(Uvec2(SGE_BASE_WIDTH, SGE_BASE_HEIGHT));
     FBAttachColor(ssaoTemp, tex2DGenFormat(TEX_COL_RGBA, TEX_BIT_DEPTH_16, TEX_FORM_FLOAT));
-    if (!isFBComplete(ssaoTemp)) failWithError("Failed to initialize SSAO: incomplete framebuffer", 0);
+    if (!isFBComplete(ssaoTemp)) SGE_fail("SSAO - Failed frame buffer initialization");
 
     char pos[128] = {0};
     for (uint i = 0; i < SGE_SSAO_NB_RAND_VECT; i++) {
@@ -29,7 +29,7 @@ void terminateSSAOLogic() {
 }
 
 void SSAOSetDistance(float distance) {
-    if (distance < 0.0) failWithError("SSAO distance can't be negative!");
+    if (distance < 0.0) SGE_fail("SSAO - Distance can't be negative!");
     shaderSetFloat(SSAO, "Radius", distance);
 }
 void SSAOSetIntensity(float intensity) {
@@ -44,13 +44,13 @@ void blitSSAOFB(frame_buffer* source, frame_buffer* dest) {
     shaderSetFBColor(SSAO, source, "Normal", 1, 1);
     shaderSetFBDepthStencil(SSAO, source, "Depth", 2);
 
-    blit(SSAO, FBGetColor(source, 0), ssaoTemp);
+    blitFB(SSAO, source, ssaoTemp);
     texture2D* blured = FBGetColor(ssaoTemp, 0);
     // const texture2D* blured = applyBlur(FBGetColor(source, 0), SSAO, 2);
     
     shaderSetBool(SSAO, "Pass", true);
     shaderSetTexture2D(SSAO, "Depth", 1, blured);
-    blit(SSAO, FBGetColor(source, 0), dest);
+    blitFB(SSAO, source, dest);
 
     glPopDebugGroup();
 }

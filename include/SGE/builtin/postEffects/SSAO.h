@@ -1,5 +1,5 @@
-#ifndef __SGE_BUILTIN_SSAO
-#define __SGE_BUILTIN_SSAO
+#ifndef __SGE_BUILTIN_SSAO_H__
+#define __SGE_BUILTIN_SSAO_H__
 
 #include "../../../SGE.h"
 

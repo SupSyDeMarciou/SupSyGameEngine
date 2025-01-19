@@ -1,11 +1,11 @@
-#ifndef __SGE_APP_APP
-#define __SGE_APP_APP
+#ifndef __SGE_APPLICATION_APP_H__
+#define __SGE_APPLICATION_APP_H__
 
 #include <stdarg.h>
 
 #include "../constants.h"
 #include "../scene/scene.h"
-#include "../render/render.h"
+#include "../render/rend_env.h"
 
 typedef struct Application {
     GLFWwindow* window;

@@ -1,17 +1,17 @@
+#define SGE_MAIN
 #define SGE_BASE_HEIGHT 2160
 #define SGE_BASE_WIDTH 3840
 
 #include <SupSy/SGE.h>
 #include <SupSy/SGE/builtin/extData/freeCam.h>
 #include <SupSy/SGE/builtin/extData/daylightCycle.h>
-#include <SupSy/SGE/builtin/postEffects/bloom.h>
 
-#include "rayTracer.h"
+#include "raytracer.h"
 
 // Add sphere to both SGE rendering pipeline and RayTracing pipeline
 sc_obj* newSphere(shader surfaceShader, mesh* sphereMesh, vec3 pos, float radius, uint mat) {
     sc_obj* sphere = newSceneObject(pos, quat_identity, vec3One(2.0 * radius), NULL, true, NULL);
-    scobjAttachRenderObject_SingleMat(sphere, sphereMesh, materialFromRTMat(surfaceShader, mat), true, RENDER_CULL_NONE, true, NULL, NULL);
+    scobjAttachRenderObject_SingleMat(sphere, sphereMesh, materialFromRTMat(surfaceShader, mat), true, RENDER_CULL_NONE, true, false, NULL, NULL);
     raytracerAddObject(pos, radius,  mat);
 }
 
@@ -28,13 +28,12 @@ int main() {
 
     // Initialize and ragister
     initializeApp("RayTracer");
-    initializeBloom();
     registerFreeCam();
     registerDaylightCycle();
 
     frame_buffer* fbRT = newFrameBuffer(Uvec2(SGE_BASE_WIDTH, SGE_BASE_HEIGHT));
     FBAttachColor(fbRT, tex2DGenFormat(TEX_COL_RGBA, TEX_BIT_DEPTH_16, TEX_FORM_FLOAT));
-    if (!isFBComplete(fbRT)) failWithError("FBRT not complete", 0);
+    FBFailIfNotComplete(fbRT);
 
     const uint totalSamples = 2048;
     initializeRayTracer(FBGetColor(fbRT, 0), 5, 15, totalSamples);
@@ -69,7 +68,7 @@ int main() {
     // Create Sun
     sc_obj* sun = newSceneObject(vec3_zero, quat_identity, vec3_one, NULL, false, updateDaylightCycle);
     light* sunLight = scobjAttachLight_Directional(sun, scale3(Vec3(1, 1, 0.9), 70.0));
-    scobjAttachDaylightCycle(sun, vec3Unit(0, 0, 1), 120, PI);
+    scobjAttachDaylightCycle(sun, vec3Unit(1, 0, 0), 120, PI);
     simpleSkySetSun(REGetBackground(), scobjGetExtData(sun, light));
 
     // Create text
@@ -81,7 +80,7 @@ int main() {
     frame_buffer* fb0 = REGetOutputFB(APP->renderEnvironment);
     frame_buffer* fb1 = newFrameBuffer(Uvec2(SGE_BASE_WIDTH, SGE_BASE_HEIGHT));
     FBAttachColor(fb1, tex2DGenFormat(TEX_COL_RGBA, TEX_BIT_DEPTH_16, TEX_FORM_FLOAT));
-    if (!isFBComplete(fb1)) failWithError("FB1 not complete", 0);
+    FBFailIfNotComplete(fb1);
 
     // State
     bool RTXAccumulating = false;

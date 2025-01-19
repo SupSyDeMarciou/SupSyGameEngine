@@ -36,6 +36,6 @@ void blitFB(post_shader s, frame_buffer* source, frame_buffer* dest);
 
 
 extern post_shader noOpp; // Post process shader with no effect
-void post_sInitNoOpp();
+void postShaderInitNoOpp();
 
 #endif

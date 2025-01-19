@@ -15,19 +15,16 @@ layout (location = 0) out vec4 FragColor;
 void main() {
 
     vec2 uv = TexCoords;
-    vec3 color = texture(Source, uv).rgb;
+    vec4 color = texture(Source, uv);
 
     if (Pass) {
-        vec3 blur = texture(Blured, uv).rgb;
-        // color += blur * 8.0 / float(NbIter) * Intensity;
+        vec4 blur = texture(Blured, uv);
         color += blur * 8.0 * Intensity;
-        // color = blur;
     } else {
-        float ln = dot(color, vec3(0.2126, 0.7152, 0.0722)); // luminosiy
+        float ln = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722)); // luminosiy
         float t = max(0.0, ln - Threshold) * 0.125; // Magic constant
-        color = mix(vec3(0), color, t);
+        color = mix(vec4(0, 0, 0, color.a), color, t);
     }
 
-
-    FragColor = vec4(color, 1.0);
+    FragColor = color;
 }

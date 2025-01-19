@@ -7,7 +7,7 @@ static comp_shader blur = 0;
 static post_shader blurAdd = 0;
 static frame_buffer* resizeRb[SGE_BUILTIN_BLUR_MAX_ITER + 2] = {NULL};
 
-bool initializeBlurLogic() {
+bool initializeBlur() {
     if (blur) return false;
     blur = createComputeShader("!builtin/postEffects/blur.cs");
     blurAdd = createPostProcessShader("!builtin/postEffects/blur_add.fs");
@@ -24,16 +24,16 @@ bool initializeBlurLogic() {
         resizeRb[i] = newFrameBuffer(Uvec2(width / s, height / s));
         FBAttachColor(resizeRb[i], format);
         FBAttachColor(resizeRb[i], format);
-        if (!isFBComplete(resizeRb[i])) failWithError("Frame buffer not complete!", 0);
+        if (!isFBComplete(resizeRb[i])) SGE_fail("BLUR - failed frame buffer initialization");
     }
 
     resizeRb[SGE_BUILTIN_BLUR_MAX_ITER] = newFrameBuffer(Uvec2(SGE_BASE_WIDTH, SGE_BASE_HEIGHT));
     FBAttachColor(resizeRb[SGE_BUILTIN_BLUR_MAX_ITER], format);
-    if (!isFBComplete(resizeRb[SGE_BUILTIN_BLUR_MAX_ITER])) failWithError("Frame buffer not complete!", 0);
+    if (!isFBComplete(resizeRb[SGE_BUILTIN_BLUR_MAX_ITER])) SGE_fail("BLUR - failed frame buffer initialization");
 
     resizeRb[SGE_BUILTIN_BLUR_MAX_ITER + 1] = newFrameBuffer(Uvec2(SGE_BASE_WIDTH, SGE_BASE_HEIGHT));
     FBAttachColor(resizeRb[SGE_BUILTIN_BLUR_MAX_ITER + 1], format);
-    if (!isFBComplete(resizeRb[SGE_BUILTIN_BLUR_MAX_ITER + 1])) failWithError("Frame buffer not complete!", 0);
+    if (!isFBComplete(resizeRb[SGE_BUILTIN_BLUR_MAX_ITER + 1])) SGE_fail("BLUR - failed frame buffer initialization");
     return true;
 }
 
@@ -60,6 +60,11 @@ static void applyBlurOnce(frame_buffer* buffer) {
 const texture2D* applyBlur(texture2D* source, post_shader init, uint iter) {
 
     glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 2, -1, "SGE Applying Blur");
+
+    if (iter > SGE_BUILTIN_BLUR_MAX_ITER) {
+        SGE_throwWarning("BLUR - Number of iterations limited to %d", SGE_BUILTIN_BLUR_MAX_ITER);
+        iter = SGE_BUILTIN_BLUR_MAX_ITER;
+    }
 
     if (iter == 0) {
         blit(init, source, resizeRb[0]);

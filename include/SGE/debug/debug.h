@@ -1,5 +1,5 @@
-#ifndef __SGE_DEBUG_DEBUG
-#define __SGE_DEBUG_DEBUG
+#ifndef __SGE_DEBUG_DEBUG_H__
+#define __SGE_DEBUG_DEBUG_H__
 
 #include "../constants.h"
 #include "../render/textures/frameBuffer.h"
@@ -96,6 +96,6 @@ void debugTimer_Print(timer ID);
 #pragma region TIMING
 
 /// @brief Print an OpenGL error message if one is present
-void debugCheckGLError();
+bool debugCheckGLError();
 
 #endif

@@ -1,124 +1,95 @@
 #ifndef __SGE_RENDER_RENDER_H__
 #define __SGE_RENDER_RENDER_H__
 
-#include "../scene/scene.h"
-#include "light.h"
-#include "renderObject.h"
+#include "../constants.h"
 
+/// @brief The different culling modes
+typedef enum Render_FaceCulling {
+    RENDER_CULL_NONE = 0b00000000,
+    RENDER_CULL_BACK = 0b00000001,
+    RENDER_CULL_FRONT = 0b00000010,
+    RENDER_CULL_BOTH = 0b00000011
+} render_cull_face;
 
+/// @brief The different culling modes
+typedef enum Render_BlendFunction {
+    RENDER_BLEND_FUNC_ZERO = GL_ZERO,
+    RENDER_BLEND_FUNC_ONE = GL_ONE,
 
-typedef shader func_backgroundRender(void);
-typedef struct REBackground {
-    void* data;
-    func_free* freeData;
-    func_backgroundRender* render;
-} re_background;
-typedef struct RenderEnvironment render_env;
+    RENDER_BLEND_FUNC_SRC_COLOR = GL_SRC_COLOR,
+    RENDER_BLEND_FUNC_SRC_NEG_COLOR = GL_ONE_MINUS_SRC_COLOR,
+    RENDER_BLEND_FUNC_SRC_ALPHA = GL_SRC_ALPHA,
+    RENDER_BLEND_FUNC_SRC_NEG_ALPHA = GL_ONE_MINUS_SRC_ALPHA,
 
-#include "../builtin/backgrounds/simpleSky.h"
+    RENDER_BLEND_FUNC_CONST_COLOR = GL_CONSTANT_COLOR,
+    RENDER_BLEND_FUNC_NEG_CONST_COLOR = GL_ONE_MINUS_CONSTANT_COLOR,
+    RENDER_BLEND_FUNC_CONST_ALPHA = GL_CONSTANT_ALPHA,
+    RENDER_BLEND_FUNC_NEG_CONST_ALPHA = GL_ONE_MINUS_CONSTANT_ALPHA,
 
-/// @brief Create a render environment
-/// @return The newly created render environment
-render_env* newRenderEnvironnment();
-/// @brief Destroy a render environment
-/// @param toDestroy The render environment to destroy
-void freeRenderEnvironment(render_env* toDestroy);
+    RENDER_BLEND_FUNC_DST_COLOR = GL_DST_COLOR,
+    RENDER_BLEND_FUNC_DST_NEG_COLOR = GL_ONE_MINUS_DST_COLOR,
+    RENDER_BLEND_FUNC_DST_ALPHA = GL_DST_ALPHA,
+    RENDER_BLEND_FUNC_DST_NEG_ALPHA = GL_ONE_MINUS_DST_ALPHA,
+} render_blend_func;
 
-/// @brief Set rendering camera for the render environment
-/// @param camera The new rendering camera
-void RESetRenderCamera(cam* camera);
-/// @brief Get rendering camera for the render environment 
-/// @return The current rendering camera
-cam* REGetRenderCamera();
+typedef enum Render_DepthFunction {
+    RENDER_DEPTH_FUNC_NEVER = GL_NEVER,
+    RENDER_DEPTH_FUNC_LESS_THAN = GL_LESS,
+    RENDER_DEPTH_FUNC_LESS_EQUAL = GL_LEQUAL,
+    RENDER_DEPTH_FUNC_GREATER_EQUAL = GL_GEQUAL,
+    RENDER_DEPTH_FUNC_GREATER_THAN = GL_GREATER,
+    RENDER_DEPTH_FUNC_ALWAYS = GL_ALWAYS
+} render_depth_func;
 
-/// @brief Add a render object to a render environment
-/// @param re The render environment
-/// @param toAdd The render object to add
-/// @return Wether a render object was added
-bool REAddRenderObject(render_env* re, render_obj* toAdd);
-/// @brief Remove a render object from a render environment
-/// @param re The render environment
-/// @param toAdd The render object to remove
-/// @return Wether a render object was removed
-bool RERemoveRenderObject(render_env* re, render_obj* toRemove);
+/// @brief Get information on the user hardware
+/// @param value The "GL_..." information to get
+/// @return The value (if tracked by the SGE)
+uint renderGetOpenGLIntergerv(GLint value);
 
-/// @brief Add a light to a render environment
-/// @param re The render environment
-/// @param toAdd The light to add
-/// @return Wether a light was added
-bool REAddLight(render_env* re, light* toAdd);
-/// @brief Remove a light from a render environment
-/// @param re The render environment
-/// @param toAdd The light to remove
-/// @return Wether a light was removed
-bool RERemoveLight(render_env* re, light* toRemove);
-/// @brief Get index of light in lights array
-/// @param re The render environment to search through
-/// @param l The light to find the index of
-/// @return The index of the light in the lights array OR -1 if not found in array
-int REGetLightIndex(render_env* re, light* l);
+/// @brief Set the current face cull mode
+/// @param cullFace The face being discarded
+void renderSetCullFace(render_cull_face cullFace);
+/// @brief Get the current face cull mode
+/// @return The current cull face mode
+render_cull_face renderGetCullFace();
+/// @brief Set wether depth testing is enabled
+/// @param doTest Wether depth testing is enabled
+void renderSetDepthTest(bool doTest);
+/// @brief Get wether depth testing is enabled
+/// @return Wether depth testing is enabled
+bool renderGetDepthTest();
+/// @brief Set wether depth writting is enabled
+/// @param doWrite Wether depth writting is enabled
+void renderSetDepthWrite(bool doWrite);
+/// @brief Get wether depth writting is enabled
+/// @return Wether depth writting is enabled
+bool renderGetDepthWrite();
+/// @brief Set the function used when testing depth
+/// @param func The function to use
+void renderSetDepthFunc(render_depth_func func);
+/// @brief Get the function used when testing depth
+/// @return The function used
+bool renderGetDepthFunc();
+/// @brief Set wether stencil testing is enabled
+/// @param doTest Wether stencil testing is enabled
+void renderSetStencilTest(bool doTest);
+/// @brief Get wether stencil testing is enabled
+/// @return Wether stencil testing is enabled
+bool renderGetStencilTest();
+/// @brief Set wether blending is enabled
+/// @param doBlend Wether blending is enabled
+void renderSetBlend(bool doBlend);
+/// @brief Get wether blending is enabled
+/// @return Wether blending is enabled
+bool renderGetBlend();
+/// @brief Set the function to use when blending
+/// @param source The blending mode for the "top" fragment
+/// @param dest The blending mode for the "bottom" fragment
+void renderSetBlendFunc(render_blend_func source, render_blend_func dest);
+/// @brief Get the function to use when blending
+/// @return The two functions used when blending
+uvec2 renderGetBlendFunc();
 
-/// @brief Set the current screen size
-/// @param size New size
-void RESetCurrentSize(uvec2 size);
-/// @brief Get the current screen size
-/// @return The current screen size
-uvec2 REGetCurrentSize();
-/// @brief Get the current screen HEIGHT to WIDTH ratio
-/// @return The current screen ratio
-float REGetScreenRatio();
-
-/// @brief Set the ambiant color of this environment
-/// @param newColor The new color to use
-void RESetAmbiantColor(vec3 newColor);
-/// @brief Set the background for the renders
-/// @param bg The new background to use
-void RESetBackground(re_background bg);
-/// @brief Get the current background data
-/// @return The current background data
-void* REGetBackground();
-
-/// @brief Get the scene output render buffer
-/// @param re The render environment
-/// @return The output render buffer
-frame_buffer* REGetOutputFB(render_env* re);
-
-
-
-void REUpdateGPUEnvironmentBuffer();
-void REUpdateGPUCameraBuffer(cam* camera);
-void REUpdateGPUObjectBuffer(render_obj* ro);
-void REUpdateGPUObjectBuffer_Calculate(sc_obj* obj);
-
-/// @brief Send some common data to the shader
-/// @param s The recieving shader
-/// @param re The render environment from which to extract the data
-/// @note Updates "u_Time" and "u_Ratio"
-void shaderSendCommonData(shader s);
-
-/// @brief Render the screen quad
-/// @param re The render environment
-/// @param s The shader to use for rendering it
-void RERenderQuad(render_env* re, shader s);
-/// @brief Render every object in the scene
-void RERenderScene();
-/// @brief Render every object in the scene to the specified frame buffer
-/// @param buffer Frame buffer on which to render
-void RERenderSceneFB(frame_buffer* buffer);
-
-/// @brief Apply Hight Dynamic Range to Low Dynamic Range conversion
-/// @param source The HDR texture
-/// @param dest The LDR output
-void blitHdrToLdr(texture2D* source, frame_buffer* dest);
-/// @brief Apply Hight Dynamic Range to Low Dynamic Range conversion
-/// @param source The HDR frame buffer
-/// @param dest The LDR output
-void blitHdrToLdrFB(frame_buffer* source, frame_buffer* dest);
-/// @brief Display the texture on screen
-/// @param source The texture to display
-void blitToScreen(texture2D* source);
-/// @brief Display the frame buffer on screen
-/// @param source The frame buffer to display
-void blitToScreenFB(frame_buffer* source);
+bool renderInitialize();
 
 #endif

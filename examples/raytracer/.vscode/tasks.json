@@ -8,13 +8,12 @@
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
-				"${workspaceFolder}\\**.c",
+				"${workspaceFolder}\\main.c",
+				"${workspaceFolder}\\raytracer.c",
 
 				"-lSGE",
 				"-lSL",
 				
-				"C:\\msys64\\mingw64\\include\\glad\\glad.c",
-				"C:\\msys64\\mingw64\\include\\SupSy\\SGE\\constants.c",
 				"-lglfw3",
 				"-lopengl32",
 				"-lgdi32",

@@ -22,6 +22,7 @@ mouse_cam* scobjAttachMouseCam(sc_obj* object, vec2 linVel, vec2 rotVel, float l
     new->lastMousePos = inputGetMousePos();
     vec3 euler; quatToVec3_Euler_(&object->transform.rotation, &euler);
     new->rot.x = euler.x; new->rot.y = euler.y;
+    
     new->linSpeed = linVel;
     new->rotSpeed = rotVel;
     new->linFric = linFric;
@@ -31,7 +32,7 @@ mouse_cam* scobjAttachMouseCam(sc_obj* object, vec2 linVel, vec2 rotVel, float l
     new->zoomLerp = new->FOV;
 
     new->linVel = vec3_zero;
-    scobjAddExtData(object, mouse_cam, new);
+    scobjAttachExtData(object, mouse_cam, new);
     return new;
 }
 
@@ -76,5 +77,5 @@ sc_obj* mouseCam_addDefault(vec3 pos, quat rot, float FOV) {
 }
 
 void registerMouseCam() {
-    extDataRegister(&EXT_ID(mouse_cam), &free);
+    registerExtData(mouse_cam, &free);
 }

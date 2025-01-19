@@ -85,21 +85,21 @@ mesh* meshMerge(mesh* a, mesh* b);
 // (i) Mesh a and b are not modified
 // (i) You can set an unwanted transform to NULL
 // (i) Set freeTransforms to TRUE to automaticaly free all transforms
-mesh* meshMergeTransform(mesh* a, vec3 positionA, quat rotationA, vec3 scaleA, mesh* b, vec3 positionB, quat rotationB, vec3 scaleB);
+mesh* meshMerge_Transform(mesh* a, vec3 positionA, quat rotationA, vec3 scaleA, mesh* b, vec3 positionB, quat rotationB, vec3 scaleB);
 
 /// @brief Render a mesh to the currently bound frame buffer
 /// @param m The mesh to render
 /// @param materials The materials associated to this mesh
-void meshRender(mesh* m, material** materials);
+void meshRender(mesh* m, array_void materials);
 /// @brief Render a mesh to the currently bound frame buffer
 /// @param m The mesh to render
 /// @param s The shader to use for the whole mesh
-void meshRenderSimple(mesh* m, shader s);
+void meshRender_Simple(mesh* m, shader s);
 /// @brief Render a mesh to the currently bound frame buffer multiple times in one render call
 /// @param m The mesh to render
 /// @param s The shader to use for the whole mesh
 /// @param count The number of times to render the mesh
-void meshRenderInstanced(mesh* m, shader s, uint count);
+void meshRender_Instanced(mesh* m, shader s, uint count);
 
 void meshAddVertexAttribute_Int(mesh* m, GLuint vbo, uint attributePointer, uint nbFields, GLuint type, size_t elemSize, size_t stride, uint attributeDivisor);
 void meshAddVertexAttribute_Float(mesh* m, GLuint vbo, uint attributePointer, uint nbFields, bool normalized, GLuint type, size_t elemSize, size_t stride, uint attributeDivisor);

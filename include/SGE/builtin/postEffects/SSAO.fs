@@ -61,6 +61,6 @@ void main() {
     else {
         float AO = texture(Depth, uv).r;
         float fact = pow(1.0 - AO, 2.0 * Intensity);
-        FragColor = texture(Source, uv) * fact;
+        FragColor = texture(Source, uv) * vec4(fact, fact, fact, 1.0);
     }
 }

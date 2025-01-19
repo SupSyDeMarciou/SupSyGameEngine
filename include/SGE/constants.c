@@ -1,1 +1,0 @@
-char* SGE_ROOT_PATH = "C:/.../include/SGE"; // Change to the path to the SGE on your machine

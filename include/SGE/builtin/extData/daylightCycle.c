@@ -15,7 +15,7 @@ void scobjAttachDaylightCycle(sc_obj* source, vec3 rotationAxis, double revoluti
     new->rotationSpeed = TAU / revolutionTime;
     new->currentAngle = initialAngle;
 
-    scobjAddExtData(source, daylight_cycle, new); // Add the external data to the source
+    scobjAttachExtData(source, daylight_cycle, new); // Add the external data to the source
 }
 
 sc_obj* daylightCycle_addDefault(vec3 rotationAxis, double revolutionTime, double initialAngle) {
@@ -25,5 +25,5 @@ sc_obj* daylightCycle_addDefault(vec3 rotationAxis, double revolutionTime, doubl
 }
 
 void registerDaylightCycle() {
-    extDataRegister(&EXT_ID(daylight_cycle), &free);
+    registerExtData(daylight_cycle, &free);
 }

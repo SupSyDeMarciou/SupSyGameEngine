@@ -17,6 +17,8 @@ out VS_OUT {
     vec2 uv;
 } vs_out;
 
+out vec4 glPos;
+
 void main()
 {
     vs_out.position = u_ObjTransformMat * vec4(aPos, 1);
@@ -24,5 +26,5 @@ void main()
     vs_out.normal = normalize(u_ObjTransformNormalMat * aNormal);
     vs_out.uv = aUv;
 
-    gl_Position = u_CamRenderMat * vs_out.position;
+    glPos = gl_Position = u_CamRenderMat * vs_out.position;
 }

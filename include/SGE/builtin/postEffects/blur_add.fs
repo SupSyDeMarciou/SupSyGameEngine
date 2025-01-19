@@ -11,7 +11,7 @@ in vec2 TexCoords;
 layout (location = 0) out vec4 FragColor;
 
 void main() {
-    vec4 color = texture(Source, TexCoords) * (Pass + 1);
+    vec4 color = texture(Source, TexCoords) * vec4(Pass + 1, Pass + 1, Pass + 1, 1.0);
     if (Pass > 0) color += texture(Self, TexCoords);
     if (Pass == Total - 1) color /= Total;
     FragColor = color;

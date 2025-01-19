@@ -39,11 +39,37 @@ void freeFrameBuffer(frame_buffer* toFree);
 bool isFBComplete(frame_buffer* buffer);
 /// @brief Crash application if frame buffer is not complete
 /// @param buffer The buffer to check
-#define FBFailIfNotComplete(buffer) do { if (!isFBComplete(buffer)) failWithError("Frame buffer not complete"); } while (0)
+#define FBFailIfNotComplete(buffer) do { if (!isFBComplete(buffer)) SGE_fail("Frame buffer "#buffer" not complete!"); } while (0)
 /// @brief Get the size of a frame buffer
 /// @param buffer The frame buffer
 /// @return The size of the frame buffer
 uvec2 FBGetSize(frame_buffer* buffer);
+/// @brief Get the OpenGL ID of a frame buffer
+/// @param buffer The buffer
+/// @return The requested ID
+/// @note This is the object identifier OpenGL returns when creating objects on the GPU
+GLuint FBGetGlID(frame_buffer* buffer);
+/// @brief Bind a frame buffer
+/// @param buffer The buffer 
+/// @param clearBits The textures to clear (color, depth and/or stencil)
+/// @param clearColor The clearing color
+void FBBind(frame_buffer* buffer, uint clearBits, vec4 clearColor);
+/// @brief Bind a frame buffer with only one color attachment
+/// @param buffer The buffer 
+/// @param clearBits The textures to clear (color, depth and/or stencil)
+/// @param clearColor The clearing color
+/// @param attachment The index of the color attachment in the frame buffer
+void FBBind_Limited(frame_buffer* rb, uint clearBits, vec4 clearColor, uint attachment);
+/// @brief Bind the window frame buffer
+/// @param width The target width to render to
+/// @param height The target height to render to
+/// @param clearBits The textures to clear (color, depth and/or stencil)
+/// @param clearColor The clearing color
+void FBUnbind(uint width, uint height, uint clearBits, vec4 clearColor);
+
+/// @brief Get the currently bound frame buffer
+/// @return The curently bound frame buffer
+frame_buffer* FBGetCurrentlyBound();
 
 ///////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////// COLOR //////////////////////////////////////
@@ -69,22 +95,6 @@ void FBAttachDepthStencil(frame_buffer* buffer, depth_stenc_form format);
 /////////////////////////////////// SHADER UTILS //////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Bind a frame buffer
-/// @param buffer The buffer 
-/// @param clearBits The textures to clear (color, depth and/or stencil)
-/// @param clearColor The clearing color
-void FBBind(frame_buffer* buffer, uint clearBits, vec4 clearColor);
-/// @brief Bind the window frame buffer
-/// @param width The target width to render to
-/// @param height The target height to render to
-/// @param clearBits The textures to clear (color, depth and/or stencil)
-/// @param clearColor The clearing color
-void FBUnbind(uint width, uint height, uint clearBits, vec4 clearColor);
-/// @brief Get the OpenGL ID of a frame buffer
-/// @param buffer The buffer
-/// @return The requested ID
-/// @note This is the object identifier OpenGL returns when creating objects on the GPU
-GLuint FBGetGlID(frame_buffer* buffer);
 /// @brief Set a shader 2D texture from a frame buffer color texture
 /// @param s Shader ID
 /// @param buffer The desired buffer

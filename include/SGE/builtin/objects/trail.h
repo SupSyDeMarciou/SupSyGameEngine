@@ -1,5 +1,5 @@
-#ifndef __SGE_BUILTIN_TRAIL
-#define __SGE_BUILTIN_TRAIL
+#ifndef __SGE_BUILTIN_TRAIL_H__
+#define __SGE_BUILTIN_TRAIL_H__
 
 #include "../../../SGE.h"
 

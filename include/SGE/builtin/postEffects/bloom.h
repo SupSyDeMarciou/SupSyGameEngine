@@ -1,5 +1,5 @@
-#ifndef __SGE_BUILTIN_BLOOM
-#define __SGE_BUILTIN_BLOOM
+#ifndef __SGE_BUILTIN_BLOOM_H__
+#define __SGE_BUILTIN_BLOOM_H__
 
 #include "../../../SGE.h"
 

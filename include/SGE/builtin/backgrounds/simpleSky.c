@@ -19,7 +19,6 @@ simple_sky* newSimpleSky(vec3 skyColorDay, vec3 skyColorNoon, vec3 skyColorNight
     new->ambiantColor = vec3_zero;
     new->sunColor = vec3_zero;
     new->shader = createPostProcessShader("!builtin/backgrounds/simpleSky.fs");
-    printf("Created shader\n");
 
     return (simple_sky*)new;
 }
@@ -32,7 +31,7 @@ void freeSimpleSky(simple_sky* toFree) {
 }
 shader simpleSkyRender();
 re_background simpleSkyAsREBackground(simple_sky* data) {
-    return (re_background) {.data = data, .freeData = (func_free*)freeSimpleSky, .render = simpleSkyRender};
+    return (re_background) {.data = data, .freeData = (func_free*)&freeSimpleSky, .render = &simpleSkyRender};
 }
 
 #define __SKY_TRANSITION 0.2

@@ -95,12 +95,12 @@ texture2D createTexture2D(uvec2 size, tex_form format);
 /// @brief Convert a 2D image into a 2D texture ON STACK
 /// @param image The source image
 /// @return The newly created 2D texture
-texture2D createTexture2D_fromImage2D(image2D image);
+texture2D createTexture2D_FromImage2D(image2D image);
 /// @brief Load a 2D image into a 2D texture ON STACK
 /// @param path The path to the image
 /// @param extension The extension of the image
 /// @return The newly created 2D texture
-texture2D createTexture2D_load(const char* path, img_ext extension);
+texture2D createTexture2D_Load(const char* path, img_ext extension);
 /// @brief Destroy a 2D texture
 /// @param toDestroy The texture to destroy
 void destroyTexture2D(texture2D toDestroy);
@@ -113,12 +113,12 @@ texture2D* newTexture2D(uvec2 size, tex_form format);
 /// @brief Convert a 2D image into a 2D texture
 /// @param image The source image
 /// @return The newly created 2D texture
-texture2D* newTexture2D_fromImage2D(image2D image);
+texture2D* newTexture2D_FromImage2D(image2D image);
 /// @brief Load a 2D image into a 2D texture
 /// @param path The path to the image
 /// @param extension The extension of the image
 /// @return The newly created 2D texture
-texture2D* newTexture2D_load(const char* path, img_ext extension);
+texture2D* newTexture2D_Load(const char* path, img_ext extension);
 /// @brief Free a 2D texture
 /// @param toFree The texture to free
 void freeTexture2D(texture2D* toFree);

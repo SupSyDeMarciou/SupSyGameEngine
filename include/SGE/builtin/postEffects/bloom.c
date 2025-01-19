@@ -3,7 +3,7 @@
 static post_shader bloom = 0;
 bool initializeBloom() {
     if (bloom) return false;
-    initializeBlurLogic();
+    initializeBlur();
     bloom = createPostProcessShader("!builtin/postEffects/bloom.fs");
     return true;
 }
@@ -14,8 +14,6 @@ void terminateBloomLogic() {
 void blitBloom(texture2D* source, frame_buffer* dest, uint nbIter, float intensity) {
 
     glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 1, -1, "SGE Applying Bloom");
-
-    if (nbIter > SGE_BUILTIN_BLUR_MAX_ITER) failWithError("Cannot apply so many blur iterations (max is %d)", SGE_BUILTIN_BLUR_MAX_ITER);
 
     shaderSetBool(bloom, "Pass", 0);
     const texture2D* blured = applyBlur(source, bloom, nbIter);

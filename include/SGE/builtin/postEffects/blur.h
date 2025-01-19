@@ -1,5 +1,5 @@
-#ifndef __SGE_BUILTIN_BLUR
-#define __SGE_BUILTIN_BLUR
+#ifndef __SGE_BUILTIN_BLUR_H__
+#define __SGE_BUILTIN_BLUR_H__
 
 #include "../../../SGE.h"
 
@@ -7,7 +7,7 @@
 
 /// @brief Initialize the necessary shaders for blur
 /// @return If the logic has been initialized
-bool initializeBlurLogic();
+bool initializeBlur();
 
 /// @brief Apply blur to the input texture2D
 /// @param source The texture to blur

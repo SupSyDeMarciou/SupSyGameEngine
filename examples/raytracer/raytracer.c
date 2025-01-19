@@ -1,4 +1,4 @@
-#include "rayTracer.h"
+#include "raytracer.h"
 
 static uint pathIdx = 0;
 static uvec3 groups;
@@ -104,7 +104,7 @@ void raytracerRender() {
     shaderSetUint(raytrace, "u_Seed", SL_randU32());
 
     shaderUse(raytrace);
-    glBindImageTexture(0, tex2DGetGlID(RTresult), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA16F);
+    shaderSetTexture2D_Image(raytrace, "Result", 0, RTresult, GL_READ_WRITE);
     compShaderDispatch(raytrace, XPD_VEC3(groups));
 }
 void raytracerRestart() {

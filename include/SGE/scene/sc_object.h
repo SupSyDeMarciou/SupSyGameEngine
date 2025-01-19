@@ -8,6 +8,37 @@
 #include "../render/material.h"
 
 
+#define EXT_ID(type) __EXT_ID_##type
+#define DEF_EXT_ID(type) extern volatile uint EXT_ID(type);
+#define DEF_EXT_ID_C(type) volatile uint EXT_ID(type) = 0;
+/// @brief Register an external data block fully BY ID
+/// @param id must be "&EXT_ID(type)"
+/// @param name Should be the exact name of the structure to register
+/// @param destroy The function which destroys the block. MUST NOT FREE THE BLOCK
+/// @param defaultValue The defaultValue for this data block. MAY BE NULL
+/// @param required The requied external data blocks to have on the object before attaching this one
+/// @return Wether this data has just been registered
+bool registerExtData_ID_Full(volatile uint* id, const char* name, func_destroy* f, void* defaultValue, array_void required);
+/// @brief Register an external data block BY ID
+/// @param id must be "&EXT_ID(type)"
+/// @param name Should be the exact name of the structure to register
+/// @param destroy The function which destroys the block. MUST NOT FREE THE BLOCK
+/// @return Wether this data has just been registered
+bool registerExtData_ID(volatile uint* id, const char* name, func_destroy* f);
+/// @brief Register an external data block
+/// @param data The type of the data to register
+/// @param destroy The function which destroys the block. MUST NOT FREE THE BLOCK
+#define registerExtData(data, f) do { if (!registerExtData_ID(&EXT_ID(data), #data, f)) SGE_throwError("External data \""#data"\" was already registered!"); } while (false)
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////// * * *  SCENE OBJECTS  * * * ////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 /// @brief Structure representing an object's spacial coordinates
 typedef struct Transform trsfrm;
 struct Transform {
@@ -19,31 +50,8 @@ struct Transform {
     trsfrm* parent;
 };
 
-/// @brief Function which frees and object
-/// @param toFree The object to free
-typedef void func_free(void* toFree);
-
-#define EXT_ID(type) EXT_ID_##type
-#define DEF_EXT_ID(type) extern const volatile uint EXT_ID_##type;
-#define DEF_EXT_ID_C(type) const volatile uint EXT_ID_##type = 0;
-/// @brief Register an external data block
-/// @param id must be "&EXT_ID(type)"
-/// @param f The function to free the data stored in this block
-void extDataRegister(const volatile uint* id, func_free* f);
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////// * * *  SCENE OBJECTS  * * * ////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
 /// @brief Structure representing an object in the scene
 typedef struct SceneObject sc_obj;
-
 /// @brief Function which updates a scene object every frame
 /// @param self The scene object to update
 typedef void func_update(sc_obj* self);
@@ -101,12 +109,13 @@ bool scobjRemoveExtData_ID(sc_obj* obj, uint ID);
 /// @param obj The object to which the block is added
 /// @param ID The ID of the data block
 /// @param data The data to package
-bool scobjAddExtData_ID(sc_obj* obj, uint ID, void* data);
+/// @return Wether the data has been attached
+bool scobjAttachExtData_ID(sc_obj* obj, uint ID, void* data);
 /// @brief Package and add an external data block to a scene object by type
 /// @param obj The object to which the block is added
 /// @param type The type of the data block
 /// @param data The data to package
-#define scobjAddExtData(obj, type, data) if (!scobjAddExtData_ID(obj, EXT_ID(type), data)) failWithError("Type \""#type"\" was not registered as an external data block");
+#define scobjAttachExtData(obj, type, data) if (!scobjAttachExtData_ID(obj, EXT_ID(type), data)) SGE_throwError("Type \""#type"\" was not registered as an external data block");
 
 /// @brief Get an object's external data by ID.
 /// @param obj The scene object
