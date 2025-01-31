@@ -40,7 +40,7 @@ static void skyCalcTrueColors(p_simple_sky* p_sk) {
     float dot = -1.0;
     if (p_sk->sun) {
         quat rot = scobjWorldRot(lightGetScObj(p_sk->sun));
-        vec3 sunDir; rot3Q_(&vec3_forward, &rot, &sunDir);
+        vec3 sunDir; rot3Q_(&vec3_forw, &rot, &sunDir);
         dot = dot3(sunDir, vec3_down);
     }
 

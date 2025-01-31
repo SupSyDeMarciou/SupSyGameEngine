@@ -28,6 +28,7 @@ typedef struct Light {
     enum LightAreaShape shape;
 } light;
 DEF_EXT_ID(light)
+SL_DEFINE_LIST(light);
 
 light* scobjAttachLight_Directional(sc_obj* source, vec3 color);
 light* scobjAttachLight_Point(sc_obj* source, vec3 color, float fallOff, float radius);

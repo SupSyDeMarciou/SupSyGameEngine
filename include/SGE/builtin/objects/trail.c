@@ -37,7 +37,7 @@ static void trail_onBeforeRender(sc_obj* self) {
     quat wrot = camGetScObj(c)->transform.rotation;
     tr->positions[tr->vert] = wpos;
     // tranposeQs(&wrot);
-    vec3 wup = vec3_forward; 
+    vec3 wup = vec3_forw; 
     // rot3Qs(&wup, &wrot);
 
 

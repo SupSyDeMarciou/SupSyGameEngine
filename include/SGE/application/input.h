@@ -126,6 +126,6 @@ vec2 inputGetMousePos_Screen();
 /// @brief Get the text inputed during this frame
 /// @return The array containing the inputed text (uint32 array)
 /// @note This array is part of the input system, it should only be used as read-only
-array_void inputGetTextInput();
+array(char32) inputGetTextInput();
 
 #endif

@@ -12,15 +12,18 @@ typedef struct Vertex {
     vec3 normal;
     vec2 uv;
 } vertex;
+SL_DEFINE_ARRAY(vertex);
 
 /// @brief Triplet of vertices (by index)
 typedef struct Triangle {
     uint a, b, c;
 } triangle;
+SL_DEFINE_ARRAY(triangle);
 
 typedef struct MaterialGroup {
     uint triangle, material;
 } mat_group;
+SL_DEFINE_ARRAY(mat_group);
 
 /// @brief 3D Mesh to be rendered
 typedef struct Mesh mesh;
@@ -90,7 +93,7 @@ mesh* meshMerge_Transform(mesh* a, vec3 positionA, quat rotationA, vec3 scaleA, 
 /// @brief Render a mesh to the currently bound frame buffer
 /// @param m The mesh to render
 /// @param materials The materials associated to this mesh
-void meshRender(mesh* m, array_void materials);
+void meshRender(mesh* m, array(material, p) materials);
 /// @brief Render a mesh to the currently bound frame buffer
 /// @param m The mesh to render
 /// @param s The shader to use for the whole mesh

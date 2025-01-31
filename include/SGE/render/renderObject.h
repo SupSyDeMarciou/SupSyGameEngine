@@ -16,7 +16,7 @@ typedef void func_onAfterRender(sc_obj* obj);
 /// @brief Render object external data structure
 typedef struct RenderObject {
     mesh* mesh;
-    array(material*) materials;
+    array(material, p) materials;
 
     func_onBeforeRender* onBeforeRender;
     func_onAfterRender* onAfterRender;
@@ -32,6 +32,7 @@ typedef struct RenderObject {
     };
 } render_obj;
 DEF_EXT_ID(render_obj)
+SL_DEFINE_LIST(render_obj);
 
 /// @brief Add a new render object external data block
 /// @param source The scene object on which this data is to be added
@@ -45,7 +46,7 @@ DEF_EXT_ID(render_obj)
 /// @param onAfterRender Function called just after a render
 render_obj* scobjAttachRenderObject (
     sc_obj* source,
-    mesh* mesh, array_void materials,
+    mesh* mesh, array(material, p) materials,
     bool render, render_cull_face cull, bool castShadow, bool transparent,
     func_onBeforeRender* onBeforeRender, func_onAfterRender* onAfterRender
 );
@@ -66,6 +67,9 @@ render_obj* scobjAttachRenderObject_SingleMat (
     func_onBeforeRender* onBeforeRender, func_onAfterRender* onAfterRender
 );
 
+/// @brief Get the scene object to which this renderObject is attached
+/// @param ro The render object
+/// @return The source scene object
 sc_obj* ROGetScObj(render_obj* ro);
 
 /// @brief Calculate necessary data for render

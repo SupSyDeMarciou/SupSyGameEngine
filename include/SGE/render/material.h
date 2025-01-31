@@ -5,6 +5,7 @@
 #include "textures/texture.h"
 
 typedef struct Material material;
+SL_DEFINE_ARRAY(material);
 
 typedef void func_shaderSendMatData(material* materialData);
 typedef void func_freeMaterialData(void* materialData);

@@ -11,10 +11,11 @@ typedef struct ShaderBufferUniform_BindingPoint {
     
     uint offset, size;
 } sbu_bp;
+SL_DEFINE_LIST(sbu_bp)
 struct ShaderBufferUniform {
     GLuint ubo;
     uint size;
-    list bindings;
+    list(sbu_bp) bindings;
 
     bool finalized;
 };
@@ -82,10 +83,11 @@ typedef struct ShaderBufferStorage_BindingPoint {
     
     uint offset, size;
 } sbs_bp;
+SL_DEFINE_LIST(sbs_bp)
 struct ShaderBufferStorage {
     GLuint ubo;
     uint size;
-    list bindings;
+    list(sbs_bp) bindings;
 
     bool finalized;
 };

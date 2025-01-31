@@ -50,9 +50,6 @@ void fontUpdateGPUData(font* f);
 
 
 
-#define char8 char
-#define char16 __CHAR16_TYPE__
-
 typedef struct TextGlyphData {
     vec2 offset;
     uint idx;

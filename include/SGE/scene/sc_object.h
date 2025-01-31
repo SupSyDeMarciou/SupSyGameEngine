@@ -7,7 +7,12 @@
 #include "../render/mesh.h"
 #include "../render/material.h"
 
-
+/// @brief Structure for attaching data to a scene object
+typedef struct ExternalData {
+    uint ID;
+    void* data;
+} ext_data;
+SL_DEFINE_LIST(ext_data);
 #define EXT_ID(type) __EXT_ID_##type
 #define DEF_EXT_ID(type) extern volatile uint EXT_ID(type);
 #define DEF_EXT_ID_C(type) volatile uint EXT_ID(type) = 0;
@@ -18,7 +23,7 @@
 /// @param defaultValue The defaultValue for this data block. MAY BE NULL
 /// @param required The requied external data blocks to have on the object before attaching this one
 /// @return Wether this data has just been registered
-bool registerExtData_ID_Full(volatile uint* id, const char* name, func_destroy* f, void* defaultValue, array_void required);
+bool registerExtData_ID_Full(volatile uint* id, const char* name, func_destroy* f, void* defaultValue, array(uint) required);
 /// @brief Register an external data block BY ID
 /// @param id must be "&EXT_ID(type)"
 /// @param name Should be the exact name of the structure to register
@@ -63,8 +68,10 @@ struct SceneObject {
     bool isStatic; // If this object never updates
     bool isActive; // if the object is currently active
     
-    list externalData;
+    list(ext_data) externalData;
 };
+SL_DEFINE_ARRAY(sc_obj);
+SL_DEFINE_LIST(sc_obj);
 
 /// @brief Create new scene object
 /// @param position The initial position of the object in world-space

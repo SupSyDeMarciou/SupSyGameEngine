@@ -77,19 +77,88 @@ typedef enum TextureMipMap {
 /// @param bitDepth The number of bits to allocate to each channel
 /// @param format The format of the data
 /// @return A valid texture format
-tex_form tex2DGenFormat(tex_col_comp component, tex_bit_depth bitDepth, tex_dat_form format);
+tex_form texGenFormat(tex_col_comp component, tex_bit_depth bitDepth, tex_dat_form format);
 /// @brief Generate a valid texture format from exotic format type
 /// @param otherFormat Exotic format type
 /// @return A valid texture format
-tex_form tex2DGenOtherFormat(tex_other_formats otherFormat);
+tex_form texGenOtherFormat(tex_other_formats otherFormat);
 
 
-/// @brief 2D Texture structure
-typedef struct Texture2D texture2D;
+
+/// @brief Texture structure
+typedef struct Texture texture;
+/// @brief Create a texture ON STACK
+/// @param size The size of the texture
+/// @param format The format of the texture (Use "texGenFormat" or "texGenOtherFormat" as input)
+/// @param gl_TYPE The underlying OpenGL type of this texture
+/// @return The newly created texture
+texture createTexture(uvec3 size, tex_form format, GLuint gl_TYPE);
+/// @brief Destroy a texture
+/// @param toDestroy The texture to destroy
+void destroyTexture(texture toDestroy);
+/// @brief Create a new texture
+/// @param size The size of the texture
+/// @param format The format of the texture (Use "texGenFormat" or "texGenOtherFormat" as input)
+/// @param gl_TYPE The underlying OpenGL type of this texture
+/// @return The newly created texture
+texture* newTexture(uvec3 size, tex_form format, GLuint gl_TYPE);
+/// @brief Free a texture
+/// @param toFree The texture to free
+void freeTexture(texture* toFree);
+
+/// @brief Set a 2D texture's wrapping mode
+/// @param texture The 2D texture
+/// @param wrapS The wrapping mode in S direction
+/// @param wrapT The wrapping mode in T direction
+/// @param wrapR The wrapping mode in R direction
+void texSetWrap(texture* texture, tex_wrap_mode wrapS, tex_wrap_mode wrapT, tex_wrap_mode wrapR);
+/// @brief Set a texture's filter mode
+/// @param texture The texture
+/// @param magnifyFilter The filter mode when magnifying (going higher res)
+/// @param minifyFilter The filter mode when minifying (going lower res)
+void texSetFilter(texture* texture, tex_filter_mode magnifyFilter, tex_filter_mode minifyFilter);
+/// @brief Set a texture's filter mode
+/// @param texture The texture
+/// @param magnifyMipMap The filter mode when magnifying a mip-map (going higher res)
+/// @param minifyMipMap The filter mode when minifying a mip-map (going lower res)
+/// @param mipmapLevel The number of mip-maps to create
+void texSetMipMap(texture* texture, tex_mipmap magnifyMipMap, tex_mipmap minifyMipMap, uint mipmapLevel);
+/// @brief Set a texture's border color
+/// @param texture The texture
+/// @param color The color to use
+void texSetBorderColor(texture* texture, vec4 color);
+/// @brief Set a texture's color components swizzle
+/// @param texture The texture
+/// @param swizzle The swizzle mask (r = 0, g = 1, b = 2, a = 3)
+void texSetSwizzle(texture* texture, ivec4 swizzle);
+/// @brief Override a texture's format
+/// @param texture The texture
+/// @param format The new format
+void texOverrideFormat(texture* texture, tex_form format);
+/// @brief Get a texture's format
+/// @param texture The texture
+/// @return The texture's format
+tex_form texGetFormat(const texture* texture);
+/// @brief Get the OpenGL ID of a texture
+/// @param tex The texture
+/// @return The requested ID
+/// @note This is the object identifier OpenGL returns when creating objects on the GPU
+GLuint texGetGlID(const texture* tex);
+
+/// @brief Apply the CPU-side changes on the GPU
+/// @param texture The texture
+/// @note This function should be called after all the changes to the target texture have been registered with the "texSet..." functions
+void texApplyChanges(texture* texture);
+
+
+
+typedef struct Texture texture1D;
+typedef struct Texture texture2D;
+typedef struct Texture texture3D;
 
 /// @brief Create a 2D texture ON STACK
 /// @param size The size of the texture
-/// @param format The format of the texture (Use "tex2DGenFormat" or "tex2DGenOtherFormat" as input)
+/// @param format The format of the texture (Use "texGenFormat" or "texGenOtherFormat" as input)
 /// @return The newly created 2D texture
 texture2D createTexture2D(uvec2 size, tex_form format);
 /// @brief Convert a 2D image into a 2D texture ON STACK
@@ -101,56 +170,27 @@ texture2D createTexture2D_FromImage2D(image2D image);
 /// @param extension The extension of the image
 /// @return The newly created 2D texture
 texture2D createTexture2D_Load(const char* path, img_ext extension);
-/// @brief Destroy a 2D texture
-/// @param toDestroy The texture to destroy
-void destroyTexture2D(texture2D toDestroy);
 
 /// @brief Create new 2D texture
 /// @param size The size of the texture
-/// @param format The format of the texture (Use "tex2DGenFormat" or "tex2DGenOtherFormat" as input)
+/// @param format The format of the texture (Use "texGenFormat" or "texGenOtherFormat" as input)
 /// @return The newly created 2D texture
 texture2D* newTexture2D(uvec2 size, tex_form format);
 /// @brief Convert a 2D image into a 2D texture
 /// @param image The source image
 /// @return The newly created 2D texture
-texture2D* newTexture2D_FromImage2D(image2D image);
+texture2D* newTexture2D_FromImage(image2D image);
 /// @brief Load a 2D image into a 2D texture
 /// @param path The path to the image
 /// @param extension The extension of the image
 /// @return The newly created 2D texture
 texture2D* newTexture2D_Load(const char* path, img_ext extension);
-/// @brief Free a 2D texture
-/// @param toFree The texture to free
-void freeTexture2D(texture2D* toFree);
 
 /// @brief Set a 2D texture's wrapping mode
 /// @param texture The 2D texture
 /// @param wrapS The wrapping mode in S direction
 /// @param wrapT The wrapping mode in T direction
 void tex2DSetWrap(texture2D* texture, tex_wrap_mode wrapS, tex_wrap_mode wrapT);
-/// @brief Set a 2D texture's filter mode
-/// @param texture The 2D texture
-/// @param magnifyFilter The filter mode when magnifying (going higher res)
-/// @param minifyFilter The filter mode when minifying (going lower res)
-void tex2DSetFilter(texture2D* texture, tex_filter_mode magnifyFilter, tex_filter_mode minifyFilter);
-/// @brief Set a 2D texture's filter mode
-/// @param texture The 2D texture
-/// @param magnifyMipMap The filter mode when magnifying a mip-map (going higher res)
-/// @param minifyMipMap The filter mode when minifying a mip-map (going lower res)
-/// @param mipmapLevel The number of mip-maps to create
-void tex2DSetMipMap(texture2D* texture, tex_mipmap magnifyMipMap, tex_mipmap minifyMipMap, uint mipmapLevel);
-/// @brief Override a 2D texture's format
-/// @param texture The 2D texture
-/// @param format The new format
-void tex2DOverrideFormat(texture2D* texture, tex_form format);
-/// @brief Get a 2D texture's format
-/// @param texture The 2D texture
-/// @return The texture's format
-tex_form tex2DGetFormat(const texture2D* texture);
-/// @brief Apply the CPU-side changes on the GPU
-/// @param texture The texture
-/// @note This function should be called after all the changes to the target texture have been registered with the "tex2DSet..." functions
-void tex2DApplyChanges(texture2D* texture);
 /// @brief Override a 2D texture's size
 /// @param texture The 2D texture
 /// @param newSize The new size
@@ -159,12 +199,6 @@ void tex2DOverrideSize(texture2D* texture, uvec2 newSize);
 /// @param texture The 2D texture
 /// @return The texture's size
 uvec2 tex2DGetSize(const texture2D* tex);
-
-/// @brief Get the OpenGL ID of a 2D texture
-/// @param tex The 2D texture
-/// @return The requested ID
-/// @note This is the object identifier OpenGL returns when creating objects on the GPU
-GLuint tex2DGetGlID(const texture2D* tex);
 
 /// @brief Set a shader texture
 /// @param s Shader ID

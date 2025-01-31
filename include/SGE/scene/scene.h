@@ -4,7 +4,7 @@
 #include "sc_object.h"
 
 typedef struct Scene {
-    list sceneObjects;
+    list(sc_obj) sceneObjects;
 } scene;
 
 /// @brief Creates a new empty scene
